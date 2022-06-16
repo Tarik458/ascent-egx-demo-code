@@ -907,7 +907,7 @@ All meshes in 3ds Max are lowercase to differentiate them from their FBX export.
 
 | Asset Type              | Prefix     | Suffix     | Notes                            |
 | ----------------------- | ---------- | ---------- | -------------------------------- |
-| Prefab         |        | PF           |                                  |
+| Prefab                  | PF_       |            |                                  |
 | Prefab Instance         | I       |            |                                  |
 | Scriptable Object       |     |        | Assigned "Blueprint" label in Editor |
 
