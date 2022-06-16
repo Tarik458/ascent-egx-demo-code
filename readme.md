@@ -1,6 +1,6 @@
 # Ascent 2.0
 
-Repository for Ascent 2.0. Please see below for style guidance across the project.
+Repository for Ascent 2.0. Please see below for style guidance across the project (located at https://github.com/justinwasilenko/Unity-Style-Guide).
 
 # Unity Style Guide
 
