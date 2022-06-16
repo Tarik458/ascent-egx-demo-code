@@ -1,6 +1,6 @@
 # Ascent 2.0
 
-Respository for Ascent 2.0. Please see below for style guidance across the project.
+Repository for Ascent 2.0. Please see below for style guidance across the project.
 
 # Unity Style Guide
 
