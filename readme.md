@@ -1,6 +1,6 @@
 # Ascent 2.0
 
-Repository for Ascent 2.0. Please see below for style guidance across the project (located at https://github.com/justinwasilenko/Unity-Style-Guide).
+Repository for Ascent 2.0. Please see below for style guidance across the project (originally from https://github.com/justinwasilenko/Unity-Style-Guide).
 
 # Unity Style Guide
 
@@ -907,7 +907,7 @@ All meshes in 3ds Max are lowercase to differentiate them from their FBX export.
 
 | Asset Type              | Prefix     | Suffix     | Notes                            |
 | ----------------------- | ---------- | ---------- | -------------------------------- |
-| Prefab         |        |            |                                  |
+| Prefab         |        | PF           |                                  |
 | Prefab Instance         | I       |            |                                  |
 | Scriptable Object       |     |        | Assigned "Blueprint" label in Editor |
 
