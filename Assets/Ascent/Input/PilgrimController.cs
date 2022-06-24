@@ -6,13 +6,16 @@ using UnityEngine.InputSystem;
 public class PilgrimController : MonoBehaviour
 {
     [SerializeField]
-    [Tooltip("Modifier to change the walkspeed of the pilgrim")]
+    [Tooltip("Modifier to change the walkspeed of the pilgrim, default 2.5")]
     private float MoveSpeed = 2.5f;
     [SerializeField]
-    [Tooltip("The visual component of the pilgrim to be rotated to face the direction of travel")]
-    private GameObject VisualComponent;
+    [Tooltip("Modifier to change the speed the pilgrim rotates to face the direction of travel, default 360")]
+    private float RotateSpeed = 360f;
+    [SerializeField]
+    [Tooltip("The transform of the visual component of the pilgrim to be rotated to face the direction of travel")]
+    private Transform VisualComponent;
 
-    private Vector2 moveDirection;
+    private Vector3 moveDirection;
 
     /// <summary>
     /// Use Controls not _controls
@@ -44,7 +47,14 @@ public class PilgrimController : MonoBehaviour
     private void Update()
     {
         // Move the pilgrim smoothly in correct direction.
-        transform.Translate(new Vector3(moveDirection.x, 0f, moveDirection.y) * MoveSpeed * Time.deltaTime);
+        transform.Translate(moveDirection * MoveSpeed * Time.deltaTime);
+
+        if (moveDirection != Vector3.zero)
+        {
+            Quaternion rotateTo = Quaternion.LookRotation(moveDirection, Vector3.up);
+
+            VisualComponent.rotation = Quaternion.RotateTowards(VisualComponent.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
+        }
     }
 
 
@@ -55,7 +65,7 @@ public class PilgrimController : MonoBehaviour
     /// <param name="direction"></param>
     private void OnMovement(Vector2 direction)
     {
-        moveDirection = direction;
+        moveDirection = new Vector3(direction.x, 0f, direction.y);
     }
 
 
