@@ -24,11 +24,11 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     ""name"": ""PlayerControls"",
     ""maps"": [
         {
-            ""name"": ""Movement"",
+            ""name"": ""Pilgrim"",
             ""id"": ""a56a0edf-c3dd-4cb3-8c79-f5cb451e897d"",
             ""actions"": [
                 {
-                    ""name"": ""Direction"",
+                    ""name"": ""Movement"",
                     ""type"": ""Value"",
                     ""id"": ""88c7da56-6bf4-47fd-a407-db489c7345ba"",
                     ""expectedControlType"": ""Vector2"",
@@ -45,7 +45,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -56,7 +56,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -67,7 +67,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -78,7 +78,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -89,18 +89,18 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""LeftStick"",
                     ""id"": ""06c6a8ef-89ed-4c1f-a1dd-d792358f480c"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=2)"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""StickDeadzone"",
                     ""groups"": """",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -111,7 +111,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -122,7 +122,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -133,7 +133,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -144,7 +144,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
-                    ""action"": ""Direction"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -181,9 +181,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         }
     ]
 }");
-        // Movement
-        m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
-        m_Movement_Direction = m_Movement.FindAction("Direction", throwIfNotFound: true);
+        // Pilgrim
+        m_Pilgrim = asset.FindActionMap("Pilgrim", throwIfNotFound: true);
+        m_Pilgrim_Movement = m_Pilgrim.FindAction("Movement", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -240,38 +240,38 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Movement
-    private readonly InputActionMap m_Movement;
-    private IMovementActions m_MovementActionsCallbackInterface;
-    private readonly InputAction m_Movement_Direction;
-    public struct MovementActions
+    // Pilgrim
+    private readonly InputActionMap m_Pilgrim;
+    private IPilgrimActions m_PilgrimActionsCallbackInterface;
+    private readonly InputAction m_Pilgrim_Movement;
+    public struct PilgrimActions
     {
         private @PlayerControls m_Wrapper;
-        public MovementActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Direction => m_Wrapper.m_Movement_Direction;
-        public InputActionMap Get() { return m_Wrapper.m_Movement; }
+        public PilgrimActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_Pilgrim_Movement;
+        public InputActionMap Get() { return m_Wrapper.m_Pilgrim; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MovementActions set) { return set.Get(); }
-        public void SetCallbacks(IMovementActions instance)
+        public static implicit operator InputActionMap(PilgrimActions set) { return set.Get(); }
+        public void SetCallbacks(IPilgrimActions instance)
         {
-            if (m_Wrapper.m_MovementActionsCallbackInterface != null)
+            if (m_Wrapper.m_PilgrimActionsCallbackInterface != null)
             {
-                @Direction.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnDirection;
-                @Direction.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnDirection;
-                @Direction.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnDirection;
+                @Movement.started -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnMovement;
             }
-            m_Wrapper.m_MovementActionsCallbackInterface = instance;
+            m_Wrapper.m_PilgrimActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Direction.started += instance.OnDirection;
-                @Direction.performed += instance.OnDirection;
-                @Direction.canceled += instance.OnDirection;
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
             }
         }
     }
-    public MovementActions @Movement => new MovementActions(this);
+    public PilgrimActions @Pilgrim => new PilgrimActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -290,8 +290,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_ControllerSchemeIndex];
         }
     }
-    public interface IMovementActions
+    public interface IPilgrimActions
     {
-        void OnDirection(InputAction.CallbackContext context);
+        void OnMovement(InputAction.CallbackContext context);
     }
 }
