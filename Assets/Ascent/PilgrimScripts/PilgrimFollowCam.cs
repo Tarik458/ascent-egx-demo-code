@@ -10,8 +10,8 @@ public class PilgrimFollowCam : MonoBehaviour
     private Transform Target;
 
     [SerializeField]
-    [Tooltip("The speed at which the camera will react to the target's movement, default 1")]
-    private float FollowSpeed = 1f;
+    [Tooltip("The speed at which the camera will react to the target's movement, default 0.025f")]
+    private float FollowSpeed = 0.025f;
 
     /// <summary>
     /// Camera position in relation to the target object. Should be updated any time the desired camera position is changed.
@@ -24,9 +24,10 @@ public class PilgrimFollowCam : MonoBehaviour
         camOffset = transform.position - Target.position;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
+        // Using FixedUpdate and no time.deltatime solved camera jitter issue.
         Vector3 camDesiredPos = Target.position + camOffset;
-        transform.position = Vector3.Lerp(transform.position, camDesiredPos, FollowSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, camDesiredPos, FollowSpeed);
     }
 }
