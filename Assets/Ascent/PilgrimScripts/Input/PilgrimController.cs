@@ -8,12 +8,18 @@ public class PilgrimController : MonoBehaviour
     [SerializeField]
     [Tooltip("Modifier to change the walkspeed of the pilgrim, default 2.5")]
     private float MoveSpeed = 2.5f;
+
     [SerializeField]
     [Tooltip("Modifier to change the speed the pilgrim rotates to face the direction of travel, default 360")]
     private float RotateSpeed = 360f;
+
     [SerializeField]
     [Tooltip("The transform of the visual component of the pilgrim to be rotated to face the direction of travel")]
     private Transform VisualComponent;
+
+    [SerializeField]
+    [Tooltip("The rigidbody attached to the highest level of the pilgrim's heirarchy. Used for movement.")]
+    private Rigidbody MainRB;
 
     private Vector3 moveDirection;
 
@@ -39,7 +45,7 @@ public class PilgrimController : MonoBehaviour
 
     private void Awake()
     {
-        // Set up event triggers for movement.
+        // Set up input event triggers for movement.
         Controls.Pilgrim.Movement.performed += ctx => OnMovement(ctx.ReadValue<Vector2>());
         Controls.Pilgrim.Movement.canceled += ctx => OnMovement(ctx.ReadValue<Vector2>());
     }
@@ -47,8 +53,9 @@ public class PilgrimController : MonoBehaviour
     private void Update()
     {
         // Move the pilgrim smoothly in correct direction.
-        transform.Translate(moveDirection * MoveSpeed * Time.deltaTime);
+        MainRB.position += moveDirection * MoveSpeed * Time.deltaTime;
 
+        // While moving rotate the pilgrim to face direction of travel.
         if (moveDirection != Vector3.zero)
         {
             Quaternion rotateTo = Quaternion.LookRotation(moveDirection, Vector3.up);

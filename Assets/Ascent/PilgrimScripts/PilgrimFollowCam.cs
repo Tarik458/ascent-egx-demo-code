@@ -14,7 +14,7 @@ public class PilgrimFollowCam : MonoBehaviour
     private float FollowSpeed = 1f;
 
     /// <summary>
-    /// Camera position in relation to the target object. Should be updated any time the camera position is changed.
+    /// Camera position in relation to the target object. Should be updated any time the desired camera position is changed.
     /// </summary>
     private Vector3 camOffset;
 
@@ -24,7 +24,7 @@ public class PilgrimFollowCam : MonoBehaviour
         camOffset = transform.position - Target.position;
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         Vector3 camDesiredPos = Target.position + camOffset;
         transform.position = Vector3.Lerp(transform.position, camDesiredPos, FollowSpeed * Time.deltaTime);
