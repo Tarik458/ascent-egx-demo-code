@@ -6,22 +6,35 @@ using UnityEngine.InputSystem;
 public class PilgrimController : MonoBehaviour
 {
     [SerializeField]
+    [Tooltip("The rigidbody attached to the highest level of the pilgrim's heirarchy. Used for movement.")]
+    private Rigidbody MainRB;
+
+    [SerializeField]
     [Tooltip("Modifier to change the walkspeed of the pilgrim, default 2.5")]
     private float MoveSpeed = 2.5f;
 
     [SerializeField]
-    [Tooltip("Modifier to change the speed the pilgrim rotates to face the direction of travel, default 360")]
-    private float RotateSpeed = 360f;
+    [Tooltip("Modifier to change movement speed of pilgrim when crouched, default 0.6f")]
+    [Range(0.1f, 0.9f)]
+    private float CrouchSpeed = 0.6f;
+
+    [SerializeField]
+    [Tooltip("Modifier to multiply the height of the pilgrim by when crouched, default 0.6f")]
+    [Range(0.1f, 0.9f)]
+    private float CrouchHeight = 0.6f;
 
     [SerializeField]
     [Tooltip("The transform of the visual component of the pilgrim to be rotated to face the direction of travel")]
     private Transform VisualComponent;
 
     [SerializeField]
-    [Tooltip("The rigidbody attached to the highest level of the pilgrim's heirarchy. Used for movement.")]
-    private Rigidbody MainRB;
+    [Tooltip("Modifier to change the speed the pilgrim's visual component rotates to face the direction of travel, default 360")]
+    private float RotateSpeed = 360f;
+
 
     private Vector3 moveDirection;
+
+    private bool isCrouched = false;
 
     /// <summary>
     /// Use Controls not _controls
@@ -53,7 +66,14 @@ public class PilgrimController : MonoBehaviour
     private void Update()
     {
         // Move the pilgrim smoothly in correct direction.
-        MainRB.position += moveDirection * MoveSpeed * Time.deltaTime;
+        if (isCrouched)
+        {
+            MainRB.position += moveDirection * MoveSpeed * CrouchSpeed * Time.deltaTime;
+        }
+        else
+        {
+            MainRB.position += moveDirection * MoveSpeed * Time.deltaTime;
+        }
 
         // While moving rotate the pilgrim to face direction of travel.
         if (moveDirection != Vector3.zero)
@@ -62,6 +82,8 @@ public class PilgrimController : MonoBehaviour
 
             VisualComponent.rotation = Quaternion.RotateTowards(VisualComponent.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
         }
+
+        
     }
 
 
@@ -75,7 +97,41 @@ public class PilgrimController : MonoBehaviour
         moveDirection = new Vector3(direction.x, 0f, direction.y);
     }
 
+    /// <summary>
+    /// Call on crouch and on uncrouch. isCrouched variable defines whether to shrink or grow character.
+    /// Should be replaced by animation later.
+    /// </summary>
+    private void OnCrouch()
+    {
+        switch(isCrouched)
+        {
+            case true:
+                VisualComponent.localScale = new Vector3(VisualComponent.localScale.x, VisualComponent.localScale.y * CrouchHeight, VisualComponent.localScale.z);
+                break;
+            case false:
+                VisualComponent.localScale = new Vector3(VisualComponent.localScale.x, VisualComponent.localScale.y / CrouchHeight, VisualComponent.localScale.z);
+                break;
+        }
+        
+    }
 
+    // Crouch zones.
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("CrouchZone"))
+        {
+            isCrouched = true;
+            OnCrouch();
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("CrouchZone"))
+        {
+            isCrouched = false;
+            OnCrouch();
+        }
+    }
 
 
     private void OnEnable()
