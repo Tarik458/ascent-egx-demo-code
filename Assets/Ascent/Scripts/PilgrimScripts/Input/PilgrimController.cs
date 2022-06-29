@@ -76,11 +76,11 @@ public class PilgrimController : MonoBehaviour
         // Move the pilgrim smoothly in correct direction.
         if (isCrouched)
         {
-            MainRB.position += moveDirection * MoveSpeed * CrouchSpeed * Time.deltaTime;
+            MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * moveDirection;
         }
         else
         {
-            MainRB.position += moveDirection * MoveSpeed * Time.deltaTime;
+            MainRB.position += MoveSpeed * Time.deltaTime * moveDirection;
         }
 
         // While moving rotate the pilgrim to face direction of travel.
