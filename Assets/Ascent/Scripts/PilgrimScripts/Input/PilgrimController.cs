@@ -28,6 +28,10 @@ public class PilgrimController : MonoBehaviour
     private Transform VisualComponent;
 
     [SerializeField]
+    [Tooltip("The transform of the collider component of the pilgrim; used for crouching etc.")]
+    private Transform ColliderComponent;
+
+    [SerializeField]
     [Tooltip("Modifier to change the speed the pilgrim's visual component rotates to face the direction of travel, default 360")]
     private float RotateSpeed = 360f;
 
@@ -103,13 +107,18 @@ public class PilgrimController : MonoBehaviour
     /// </summary>
     private void OnCrouch()
     {
+        // When anims ready only shrink collider component and trigger anim instead of manipulating visual component.
         switch(isCrouched)
         {
             case true:
                 VisualComponent.localScale = new Vector3(VisualComponent.localScale.x, VisualComponent.localScale.y * CrouchHeight, VisualComponent.localScale.z);
+                ColliderComponent.localScale = new Vector3(ColliderComponent.localScale.x, ColliderComponent.localScale.y * CrouchHeight, ColliderComponent.localScale.z);
+                // Translate pilgrim down to floor level to remove moment of floating.
+                transform.Translate(new Vector3(0f, -(CrouchHeight / 2), 0f));
                 break;
             case false:
                 VisualComponent.localScale = new Vector3(VisualComponent.localScale.x, VisualComponent.localScale.y / CrouchHeight, VisualComponent.localScale.z);
+                ColliderComponent.localScale = new Vector3(ColliderComponent.localScale.x, ColliderComponent.localScale.y / CrouchHeight, ColliderComponent.localScale.z);
                 break;
         }
         
