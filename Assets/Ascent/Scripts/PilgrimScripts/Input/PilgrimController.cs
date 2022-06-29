@@ -40,6 +40,9 @@ public class PilgrimController : MonoBehaviour
 
     private bool isCrouched = false;
 
+    private bool inFireZone = false;
+    private GameObject fireZoneObj;
+
     /// <summary>
     /// Use Controls not _controls
     /// </summary>
@@ -65,6 +68,7 @@ public class PilgrimController : MonoBehaviour
         // Set up input event triggers for movement.
         Controls.Pilgrim.Movement.performed += ctx => OnMovement(ctx.ReadValue<Vector2>());
         Controls.Pilgrim.Movement.canceled += ctx => OnMovement(ctx.ReadValue<Vector2>());
+        Controls.Pilgrim.Interact.performed += ctx => OnInteractPressed();
     }
 
     private void Update()
@@ -87,7 +91,6 @@ public class PilgrimController : MonoBehaviour
             VisualComponent.rotation = Quaternion.RotateTowards(VisualComponent.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
         }
 
-        
     }
 
 
@@ -102,11 +105,25 @@ public class PilgrimController : MonoBehaviour
     }
 
     /// <summary>
+    /// Perform a specific interaction depending on the current surroundings of the character.
+    /// </summary>
+    private void OnInteractPressed()
+    {
+        if (inFireZone)
+        {
+            fireZoneObj.GetComponent<FireFlicker>().LightFire();
+        }
+
+    }
+
+
+    /// <summary>
     /// Call on crouch and on uncrouch. isCrouched variable defines whether to shrink or grow character.
     /// Should be replaced by animation later.
     /// </summary>
-    private void OnCrouch()
+    private void OnCrouch(bool _isCrouched)
     {
+        isCrouched = _isCrouched;
         // When anims ready only shrink collider component and trigger anim instead of manipulating visual component.
         switch(isCrouched)
         {
@@ -127,18 +144,35 @@ public class PilgrimController : MonoBehaviour
     // Crouch zones.
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("CrouchZone"))
+        switch(other.gameObject.tag)
         {
-            isCrouched = true;
-            OnCrouch();
+            case "CrouchZone":
+                OnCrouch(true);
+                break;
+            case "FireZone":
+                OnCrouch(true);
+                inFireZone = true;
+                fireZoneObj = other.gameObject;
+                break;
+            default:
+                break;
         }
+
+
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("CrouchZone"))
+        switch (other.gameObject.tag)
         {
-            isCrouched = false;
-            OnCrouch();
+            case "CrouchZone":
+                OnCrouch(false);
+                break;
+            case "FireZone":
+                OnCrouch(false);
+                inFireZone = false;
+                break;
+            default:
+                break;
         }
     }
 
