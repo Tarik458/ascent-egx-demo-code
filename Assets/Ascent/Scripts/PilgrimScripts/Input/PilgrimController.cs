@@ -43,6 +43,7 @@ public class PilgrimController : MonoBehaviour
     private Vector3 moveDirection;
 
     private bool isJumping = false;
+    private float prevYVelocity = 0f;
 
     private bool isCrouched = false;
 
@@ -98,6 +99,21 @@ public class PilgrimController : MonoBehaviour
             VisualComponent.rotation = Quaternion.RotateTowards(VisualComponent.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
         }
 
+    }
+
+    private void FixedUpdate()
+    {
+        // Fixed update gives a little more time for variation of number between checks.
+        // Check if player is on the ground.
+        if (isJumping)
+        {
+            if (prevYVelocity < 0 && MainRB.velocity.y >= 0)
+            {
+                isJumping = false;
+            }
+
+            prevYVelocity = MainRB.velocity.y;
+        }
     }
 
 
