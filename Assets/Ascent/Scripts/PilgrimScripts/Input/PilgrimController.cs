@@ -14,6 +14,10 @@ public class PilgrimController : MonoBehaviour
     private float MoveSpeed = 2.5f;
 
     [SerializeField]
+    [Tooltip("Modifier to change the initial force applied to a jump, default 5")]
+    private float JumpPower = 5f;
+
+    [SerializeField]
     [Tooltip("Modifier to change movement speed of pilgrim when crouched, default 0.6f")]
     [Range(0.1f, 0.9f)]
     private float CrouchSpeed = 0.6f;
@@ -37,6 +41,8 @@ public class PilgrimController : MonoBehaviour
 
 
     private Vector3 moveDirection;
+
+    private bool isJumping = false;
 
     private bool isCrouched = false;
 
@@ -68,6 +74,7 @@ public class PilgrimController : MonoBehaviour
         // Set up input event triggers for movement.
         Controls.Pilgrim.Movement.performed += ctx => OnMovement(ctx.ReadValue<Vector2>());
         Controls.Pilgrim.Movement.canceled += ctx => OnMovement(ctx.ReadValue<Vector2>());
+        Controls.Pilgrim.Jump.performed += ctx => OnJump();
         Controls.Pilgrim.Interact.performed += ctx => OnInteractPressed();
     }
 
@@ -102,6 +109,18 @@ public class PilgrimController : MonoBehaviour
     private void OnMovement(Vector2 direction)
     {
         moveDirection = new Vector3(direction.x, 0f, direction.y);
+    }
+
+    /// <summary>
+    /// Call when jump button pressed to boost character upwards, only works if not crouched.
+    /// </summary>
+    private void OnJump()
+    {
+        if (!isCrouched && !isJumping)
+        {
+            isJumping = true;
+            MainRB.AddForce(Vector3.up * JumpPower, ForceMode.Impulse);
+        }
     }
 
     /// <summary>

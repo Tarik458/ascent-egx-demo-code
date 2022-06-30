@@ -37,6 +37,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""033a5b71-e542-4be5-8eea-817eaf02323a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""15cc8312-97f5-4e26-8233-f77c768879fb"",
@@ -226,11 +235,33 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""52c1d6ff-dfb5-49db-b169-2d2bc165aa58"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
                     ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""81dfdc9c-c3c4-44cd-88f5-88a7b8616167"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8954ffbf-4326-452c-abe9-4023922085af"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -270,6 +301,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         // Pilgrim
         m_Pilgrim = asset.FindActionMap("Pilgrim", throwIfNotFound: true);
         m_Pilgrim_Movement = m_Pilgrim.FindAction("Movement", throwIfNotFound: true);
+        m_Pilgrim_Jump = m_Pilgrim.FindAction("Jump", throwIfNotFound: true);
         m_Pilgrim_Interact = m_Pilgrim.FindAction("Interact", throwIfNotFound: true);
     }
 
@@ -331,12 +363,14 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Pilgrim;
     private IPilgrimActions m_PilgrimActionsCallbackInterface;
     private readonly InputAction m_Pilgrim_Movement;
+    private readonly InputAction m_Pilgrim_Jump;
     private readonly InputAction m_Pilgrim_Interact;
     public struct PilgrimActions
     {
         private @PlayerControls m_Wrapper;
         public PilgrimActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Pilgrim_Movement;
+        public InputAction @Jump => m_Wrapper.m_Pilgrim_Jump;
         public InputAction @Interact => m_Wrapper.m_Pilgrim_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Pilgrim; }
         public void Enable() { Get().Enable(); }
@@ -350,6 +384,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Movement.started -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnMovement;
+                @Jump.started -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnJump;
                 @Interact.started -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnInteract;
@@ -360,6 +397,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
@@ -388,6 +428,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     public interface IPilgrimActions
     {
         void OnMovement(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
     }
 }
