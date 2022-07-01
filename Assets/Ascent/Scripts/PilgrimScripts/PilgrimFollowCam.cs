@@ -85,17 +85,19 @@ public class PilgrimFollowCam : MonoBehaviour
     /// <summary>
     /// Coroutine to smoothly lerp angle cam is facing. W value is desired duration.
     /// </summary>
-    /// <param name="_offsetAddition"></param>
+    /// <param name="_angles"></param>
     /// <param name="_lerpDuration"></param>
     /// <returns></returns>
-    private IEnumerator LerpAngle(Vector3 _offsetAddition, float _lerpDuration)
+    private IEnumerator LerpAngle(Vector3 _angles, float _lerpDuration)
     {
         // make it actually do angle thing
         float elapsedTime = 0f;
+        Quaternion startRotation = transform.rotation;
+        Quaternion endRotation = Quaternion.Euler(_angles);
 
         while (elapsedTime <= _lerpDuration)
         {
-            camOffset = Vector3.Lerp(camOffset, camOffset + _offsetAddition, elapsedTime / _lerpDuration * Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / _lerpDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
