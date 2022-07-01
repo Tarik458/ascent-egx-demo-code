@@ -9,7 +9,8 @@ public class CamAdjustVals : MonoBehaviour
     private Vector4 DesiredTranslate;
 
     [SerializeField]
-    [Tooltip("The x, y, z components to tell the camera which angle to face. W value is duration of movement, defaults to 1. Not an addition to current angle.")]
+    [Tooltip("The x, y, z components to tell the camera which angle to face, can copy paste from test object transform rotation. " +
+        "W value is duration of movement, defaults to 1. Not an addition to current angle.")]
     private Vector4 DesiredRotation;
 
     /// <summary>

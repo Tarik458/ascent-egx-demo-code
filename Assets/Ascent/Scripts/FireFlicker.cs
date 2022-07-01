@@ -54,15 +54,15 @@ public class FireFlicker : MonoBehaviour
     private IEnumerator Ignition()
     {
         float ignitionDuration = 2.5f;
-        float timeDelta = 0f;
+        float elapsedTime = 0f;
         float initialBrightness = 0.1f;
         float targetBrightness = 1f;
 
-        while (timeDelta <= ignitionDuration)
+        while (elapsedTime <= ignitionDuration)
         {
-            AffectedLight.intensity = Mathf.Lerp(initialBrightness, targetBrightness, timeDelta / ignitionDuration);
+            AffectedLight.intensity = Mathf.Lerp(initialBrightness, targetBrightness, elapsedTime / ignitionDuration);
 
-            timeDelta += Time.deltaTime;
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
