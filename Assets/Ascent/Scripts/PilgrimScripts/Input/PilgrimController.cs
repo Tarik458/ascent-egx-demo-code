@@ -10,6 +10,10 @@ public class PilgrimController : MonoBehaviour
     private Rigidbody MainRB;
 
     [SerializeField]
+    [Tooltip("The Main camera with the PilgrimFollowCam script attached.")]
+    private PilgrimFollowCam FollowCam;
+
+    [SerializeField]
     [Tooltip("Modifier to change the walkspeed of the pilgrim, default 2.5")]
     private float MoveSpeed = 2.5f;
 
@@ -72,6 +76,11 @@ public class PilgrimController : MonoBehaviour
 
     private void Awake()
     {
+        if(FollowCam != null)
+        {
+            FollowCam.SetTarget(this.transform);
+        }
+
         // Set up input event triggers for movement.
         Controls.Pilgrim.Movement.performed += ctx => OnMovement(ctx.ReadValue<Vector2>());
         Controls.Pilgrim.Movement.canceled += ctx => OnMovement(ctx.ReadValue<Vector2>());
