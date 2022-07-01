@@ -43,4 +43,22 @@ public class PilgrimFollowCam : MonoBehaviour
         camOffset = transform.position - Target.position;
     }
 
+    /// <summary>
+    /// Add vector to current camera offset to change cam position in relation to target.
+    /// </summary>
+    /// <param name="_vectorToAdd"></param>
+    public void AddOffset(Vector4 _vectorToAdd)
+    {
+        // Call a coroutine !!STARTCOROUTINE!! to smoothly lerp cam offset. W value is desired duration.
+    }
+
+    /// <summary>
+    /// Define desired angle for the camera to end up facing.
+    /// </summary>
+    /// <param name="_angleToFace"></param>
+    public void SetAngleToFace(Vector4 _angleToFace)
+    {
+
+    }
+
 }

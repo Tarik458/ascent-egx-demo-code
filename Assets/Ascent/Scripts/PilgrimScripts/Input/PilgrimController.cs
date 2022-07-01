@@ -130,10 +130,10 @@ public class PilgrimController : MonoBehaviour
     /// Call when movement performed to set direction of travel.
     /// Call again when input cancelled to stop movement.
     /// </summary>
-    /// <param name="direction"></param>
-    private void OnMovement(Vector2 direction)
+    /// <param name="_direction"></param>
+    private void OnMovement(Vector2 _direction)
     {
-        moveDirection = new Vector3(direction.x, 0f, direction.y);
+        moveDirection = new Vector3(_direction.x, 0f, _direction.y);
     }
 
     /// <summary>
@@ -185,10 +185,37 @@ public class PilgrimController : MonoBehaviour
         
     }
 
-    // Crouch zones.
-    private void OnTriggerEnter(Collider other)
+    /// <summary>
+    /// Handle passing camera adjustments to the camera script.
+    /// </summary>
+    /// <param name="_triggerZone"></param>
+    private void OnCamAdjust(CamAdjustVals _triggerZoneScript)
     {
-        switch(other.gameObject.tag)
+        Vector4 offset = _triggerZoneScript.GetAdditionToOffset();
+        Vector4 directionToFace = _triggerZoneScript.GetDesiredCamRotation();
+
+        // Checks if vector is empty without W value as W defaults to 1.
+        Vector3 timeExclusionChecker;
+
+        timeExclusionChecker = offset;
+        if (timeExclusionChecker != Vector3.zero)
+        {
+            // Apply offset.
+            FollowCam.AddOffset(offset);
+        }
+
+        timeExclusionChecker = directionToFace;
+        if (timeExclusionChecker != Vector3.zero)
+        {
+            // Apply rotation.
+            FollowCam.SetAngleToFace(directionToFace);
+        }
+    }
+
+
+    private void OnTriggerEnter(Collider _other)
+    {
+        switch(_other.gameObject.tag)
         {
             case "CrouchZone":
                 OnCrouch(true);
@@ -196,17 +223,20 @@ public class PilgrimController : MonoBehaviour
             case "FireZone":
                 OnCrouch(true);
                 inFireZone = true;
-                fireZoneObj = other.gameObject;
+                fireZoneObj = _other.gameObject;
+                break;
+            case "CamAdjustZone":
+                OnCamAdjust(_other.gameObject.GetComponent<CamAdjustVals>());
                 break;
             default:
                 break;
         }
-
-
     }
-    private void OnTriggerExit(Collider other)
+
+
+    private void OnTriggerExit(Collider _other)
     {
-        switch (other.gameObject.tag)
+        switch (_other.gameObject.tag)
         {
             case "CrouchZone":
                 OnCrouch(false);
