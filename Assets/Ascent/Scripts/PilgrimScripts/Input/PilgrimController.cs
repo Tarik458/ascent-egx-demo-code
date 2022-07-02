@@ -93,7 +93,7 @@ public class PilgrimController : MonoBehaviour
 
     private void Start()
     {
-        jumpRaycastDistance = (ColliderTransform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.1f;
+        jumpRaycastDistance = (ColliderTransform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.2f;
     }
 
     private void Update()
