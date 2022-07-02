@@ -144,7 +144,7 @@ public class PilgrimController : MonoBehaviour
     /// </summary>
     private void OnJump()
     {
-        if (!isCrouched && !isJumping)
+        if (!isCrouched && !isJumping && Physics.Raycast(transform.position, Vector3.down, jumpRaycastDistance))
         {
             isJumping = true;
             timeSinceJump = 0f;
