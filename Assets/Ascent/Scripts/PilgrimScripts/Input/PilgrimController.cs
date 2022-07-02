@@ -33,11 +33,11 @@ public class PilgrimController : MonoBehaviour
 
     [SerializeField]
     [Tooltip("The transform of the visual component of the pilgrim to be rotated to face the direction of travel")]
-    private Transform VisualComponent;
+    private Transform VisualComponentTransform;
 
     [SerializeField]
     [Tooltip("The transform of the collider component of the pilgrim; used for crouching etc.")]
-    private Transform ColliderComponent;
+    private Transform ColliderTransform;
 
     [SerializeField]
     [Tooltip("Modifier to change the speed the pilgrim's visual component rotates to face the direction of travel, default 360")]
@@ -46,13 +46,16 @@ public class PilgrimController : MonoBehaviour
 
     private Vector3 moveDirection;
 
-    private bool isJumping = false;
-    private float prevYVelocity = 0f;
-
     private bool isCrouched = false;
 
     private bool inFireZone = false;
     private GameObject fireZoneObj;
+
+    private bool isJumping = false;
+    // Distance to raycast downwards from pilgrim for groundcheck, should be half height + small margin.
+    private float jumpRaycastDistance;
+    private float jumpCheckTimeDelay = 0.5f;
+    private float timeSinceJump = 0f;
 
     /// <summary>
     /// Use Controls not _controls
@@ -88,6 +91,11 @@ public class PilgrimController : MonoBehaviour
         Controls.Pilgrim.Interact.performed += ctx => OnInteractPressed();
     }
 
+    private void Start()
+    {
+        jumpRaycastDistance = (ColliderTransform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.1f;
+    }
+
     private void Update()
     {
         // Move the pilgrim smoothly in correct direction.
@@ -105,23 +113,18 @@ public class PilgrimController : MonoBehaviour
         {
             Quaternion rotateTo = Quaternion.LookRotation(moveDirection, Vector3.up);
 
-            VisualComponent.rotation = Quaternion.RotateTowards(VisualComponent.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
+            VisualComponentTransform.rotation = Quaternion.RotateTowards(VisualComponentTransform.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
         }
 
-    }
 
-    private void FixedUpdate()
-    {
-        // Fixed update gives a little more time for variation of number between checks.
         // Check if player is on the ground.
         if (isJumping)
         {
-            if (prevYVelocity < 0 && MainRB.velocity.y >= 0)
+            if (Physics.Raycast(transform.position, Vector3.down, jumpRaycastDistance) && timeSinceJump > jumpCheckTimeDelay)
             {
                 isJumping = false;
             }
-
-            prevYVelocity = MainRB.velocity.y;
+            timeSinceJump += Time.deltaTime;
         }
     }
 
@@ -144,6 +147,7 @@ public class PilgrimController : MonoBehaviour
         if (!isCrouched && !isJumping)
         {
             isJumping = true;
+            timeSinceJump = 0f;
             MainRB.AddForce(Vector3.up * JumpPower, ForceMode.Impulse);
         }
     }
@@ -172,14 +176,14 @@ public class PilgrimController : MonoBehaviour
         switch(isCrouched)
         {
             case true:
-                VisualComponent.localScale = new Vector3(VisualComponent.localScale.x, VisualComponent.localScale.y * CrouchHeight, VisualComponent.localScale.z);
-                ColliderComponent.localScale = new Vector3(ColliderComponent.localScale.x, ColliderComponent.localScale.y * CrouchHeight, ColliderComponent.localScale.z);
+                VisualComponentTransform.localScale = new Vector3(VisualComponentTransform.localScale.x, VisualComponentTransform.localScale.y * CrouchHeight, VisualComponentTransform.localScale.z);
+                ColliderTransform.localScale = new Vector3(ColliderTransform.localScale.x, ColliderTransform.localScale.y * CrouchHeight, ColliderTransform.localScale.z);
                 // Translate pilgrim down to floor level to remove moment of floating.
                 transform.Translate(new Vector3(0f, -(CrouchHeight / 2), 0f));
                 break;
             case false:
-                VisualComponent.localScale = new Vector3(VisualComponent.localScale.x, VisualComponent.localScale.y / CrouchHeight, VisualComponent.localScale.z);
-                ColliderComponent.localScale = new Vector3(ColliderComponent.localScale.x, ColliderComponent.localScale.y / CrouchHeight, ColliderComponent.localScale.z);
+                VisualComponentTransform.localScale = new Vector3(VisualComponentTransform.localScale.x, VisualComponentTransform.localScale.y / CrouchHeight, VisualComponentTransform.localScale.z);
+                ColliderTransform.localScale = new Vector3(ColliderTransform.localScale.x, ColliderTransform.localScale.y / CrouchHeight, ColliderTransform.localScale.z);
                 break;
         }
         
