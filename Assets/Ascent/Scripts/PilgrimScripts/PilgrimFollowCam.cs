@@ -120,7 +120,7 @@ public class PilgrimFollowCam : MonoBehaviour
     {
         float elapsedTime = 0f;
         Vector3 startPos = camOffset;
-        Vector3 endPos = camOffset + _offsetAddition;
+        Vector3 endPos = defaultCamOffset + _offsetAddition;
 
         while (elapsedTime <= _lerpDuration)
         {
