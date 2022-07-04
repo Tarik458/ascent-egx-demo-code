@@ -68,7 +68,7 @@ public class PilgrimFollowCam : MonoBehaviour
             {
                 offsetIsBusy = false;
             }
-            StartCoroutine(LerpToDefaultOffset(_vectorToAdd, _vectorToAdd.w));
+            StartCoroutine(LerpToDefaultOffset(_vectorToAdd.w));
         }
         else
         {
@@ -96,7 +96,7 @@ public class PilgrimFollowCam : MonoBehaviour
             {
                 rotIsBusy = false;
             }
-            StartCoroutine(LerpAngleToDefault(_angleToFace, _angleToFace.w));
+            StartCoroutine(LerpAngleToDefault(_angleToFace.w));
         }
         else
         {
@@ -141,7 +141,7 @@ public class PilgrimFollowCam : MonoBehaviour
     /// <param name="_offsetAddition"></param>
     /// <param name="_lerpDuration"></param>
     /// <returns></returns>
-    private IEnumerator LerpToDefaultOffset(Vector3 _offsetAddition, float _lerpDuration)
+    private IEnumerator LerpToDefaultOffset(float _lerpDuration)
     {
         float elapsedTime = 0f;
         Vector3 startPos = camOffset;
@@ -186,7 +186,7 @@ public class PilgrimFollowCam : MonoBehaviour
         rotIsBusy = false;
     }
 
-    private IEnumerator LerpAngleToDefault(Vector3 _angles, float _lerpDuration)
+    private IEnumerator LerpAngleToDefault(float _lerpDuration)
     {
         float elapsedTime = 0f;
         Quaternion startRotation = transform.rotation;
