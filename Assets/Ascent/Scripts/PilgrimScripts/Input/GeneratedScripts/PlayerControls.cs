@@ -266,6 +266,76 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""BookPages"",
+            ""id"": ""b136298f-7877-4d15-805e-dee99adb7331"",
+            ""actions"": [
+                {
+                    ""name"": ""TurnForward"",
+                    ""type"": ""Button"",
+                    ""id"": ""b89695a8-db6c-432d-ac20-f4fdff7032cf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TurnBackward"",
+                    ""type"": ""Button"",
+                    ""id"": ""21f16221-9b53-445c-baa3-8388cbb729a2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6f9469b0-1891-4590-a567-4a5726ef787a"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""TurnForward"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""baec0935-e1d3-4f42-b9ff-ff059795ad87"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""TurnForward"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5ce17c86-298d-485a-b929-b8f8ccdc046a"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""TurnBackward"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7688dca-9d25-4d61-9047-fef6cc448ddb"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""TurnBackward"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -303,6 +373,10 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Pilgrim_Movement = m_Pilgrim.FindAction("Movement", throwIfNotFound: true);
         m_Pilgrim_Jump = m_Pilgrim.FindAction("Jump", throwIfNotFound: true);
         m_Pilgrim_Interact = m_Pilgrim.FindAction("Interact", throwIfNotFound: true);
+        // BookPages
+        m_BookPages = asset.FindActionMap("BookPages", throwIfNotFound: true);
+        m_BookPages_TurnForward = m_BookPages.FindAction("TurnForward", throwIfNotFound: true);
+        m_BookPages_TurnBackward = m_BookPages.FindAction("TurnBackward", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -407,6 +481,47 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         }
     }
     public PilgrimActions @Pilgrim => new PilgrimActions(this);
+
+    // BookPages
+    private readonly InputActionMap m_BookPages;
+    private IBookPagesActions m_BookPagesActionsCallbackInterface;
+    private readonly InputAction m_BookPages_TurnForward;
+    private readonly InputAction m_BookPages_TurnBackward;
+    public struct BookPagesActions
+    {
+        private @PlayerControls m_Wrapper;
+        public BookPagesActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @TurnForward => m_Wrapper.m_BookPages_TurnForward;
+        public InputAction @TurnBackward => m_Wrapper.m_BookPages_TurnBackward;
+        public InputActionMap Get() { return m_Wrapper.m_BookPages; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(BookPagesActions set) { return set.Get(); }
+        public void SetCallbacks(IBookPagesActions instance)
+        {
+            if (m_Wrapper.m_BookPagesActionsCallbackInterface != null)
+            {
+                @TurnForward.started -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnTurnForward;
+                @TurnForward.performed -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnTurnForward;
+                @TurnForward.canceled -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnTurnForward;
+                @TurnBackward.started -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnTurnBackward;
+                @TurnBackward.performed -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnTurnBackward;
+                @TurnBackward.canceled -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnTurnBackward;
+            }
+            m_Wrapper.m_BookPagesActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @TurnForward.started += instance.OnTurnForward;
+                @TurnForward.performed += instance.OnTurnForward;
+                @TurnForward.canceled += instance.OnTurnForward;
+                @TurnBackward.started += instance.OnTurnBackward;
+                @TurnBackward.performed += instance.OnTurnBackward;
+                @TurnBackward.canceled += instance.OnTurnBackward;
+            }
+        }
+    }
+    public BookPagesActions @BookPages => new BookPagesActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -430,5 +545,10 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+    }
+    public interface IBookPagesActions
+    {
+        void OnTurnForward(InputAction.CallbackContext context);
+        void OnTurnBackward(InputAction.CallbackContext context);
     }
 }
