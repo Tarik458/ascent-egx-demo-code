@@ -244,6 +244,76 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "BookPages",
+            "id": "b136298f-7877-4d15-805e-dee99adb7331",
+            "actions": [
+                {
+                    "name": "TurnForward",
+                    "type": "Button",
+                    "id": "b89695a8-db6c-432d-ac20-f4fdff7032cf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TurnBackward",
+                    "type": "Button",
+                    "id": "21f16221-9b53-445c-baa3-8388cbb729a2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6f9469b0-1891-4590-a567-4a5726ef787a",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "TurnForward",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "baec0935-e1d3-4f42-b9ff-ff059795ad87",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "TurnForward",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ce17c86-298d-485a-b929-b8f8ccdc046a",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "TurnBackward",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a7688dca-9d25-4d61-9047-fef6cc448ddb",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "TurnBackward",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
