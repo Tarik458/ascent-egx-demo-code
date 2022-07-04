@@ -192,27 +192,46 @@ public class PilgrimController : MonoBehaviour
     /// <summary>
     /// Handle passing camera adjustments to the camera script.
     /// </summary>
-    /// <param name="_triggerZone"></param>
-    private void OnCamAdjust(CamAdjustVals _triggerZoneScript)
+    /// <param name="_triggerZoneScript"></param>
+    /// <param name="_isExit"></param>
+    private void OnCamAdjust(CamAdjustVals _triggerZoneScript, bool _isExit = false)
     {
         Vector4 offset = _triggerZoneScript.GetAdditionToOffset();
         Vector4 directionToFace = _triggerZoneScript.GetDesiredCamRotation();
 
         // Checks if vector is empty without W value as W defaults to 1.
         Vector3 timeExclusionChecker;
-
-        timeExclusionChecker = offset;
-        if (timeExclusionChecker != Vector3.zero)
+        if (_isExit)
         {
-            // Apply offset.
-            FollowCam.AddOffset(offset);
+            timeExclusionChecker = offset;
+            if (timeExclusionChecker != Vector3.zero)
+            {
+                // Apply offset.
+                FollowCam.AddOffset(offset, _isExit);
+            }
+
+            timeExclusionChecker = directionToFace;
+            if (timeExclusionChecker != Vector3.zero)
+            {
+                // Apply rotation.
+                FollowCam.SetAngleToFace(directionToFace, _isExit);
+            }
         }
-
-        timeExclusionChecker = directionToFace;
-        if (timeExclusionChecker != Vector3.zero)
+        else
         {
-            // Apply rotation.
-            FollowCam.SetAngleToFace(directionToFace);
+            timeExclusionChecker = offset;
+            if (timeExclusionChecker != Vector3.zero)
+            {
+                // Apply offset.
+                FollowCam.AddOffset(offset);
+            }
+
+            timeExclusionChecker = directionToFace;
+            if (timeExclusionChecker != Vector3.zero)
+            {
+                // Apply rotation.
+                FollowCam.SetAngleToFace(directionToFace);
+            }
         }
     }
 
@@ -248,6 +267,9 @@ public class PilgrimController : MonoBehaviour
             case "FireZone":
                 OnCrouch(false);
                 inFireZone = false;
+                break;
+            case "CamAdjustZone":
+                OnCamAdjust(_other.gameObject.GetComponent<CamAdjustVals>(), true);
                 break;
             default:
                 break;
