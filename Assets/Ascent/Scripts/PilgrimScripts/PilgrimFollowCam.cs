@@ -73,10 +73,12 @@ public class PilgrimFollowCam : MonoBehaviour
     private IEnumerator LerpOffset(Vector3 _offsetAddition, float _lerpDuration)
     {
         float elapsedTime = 0f;
+        Vector3 startPos = camOffset;
+        Vector3 endPos = camOffset + _offsetAddition;
 
         while (elapsedTime <= _lerpDuration)
         {
-            camOffset = Vector3.Lerp(camOffset, camOffset + _offsetAddition, elapsedTime / _lerpDuration * Time.deltaTime);
+            camOffset = Vector3.Lerp(startPos, endPos, elapsedTime / _lerpDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
