@@ -27,11 +27,18 @@ public class FireFlicker : MonoBehaviour
     [Range(1.1f, 1.9f)]
     private float MaxBrightness = 1.5f;
 
+    [SerializeField]
+    private AudioClip lightUpFire;
+
+    [SerializeField]
+    AudioSource audioSource;
+
 
     public void LightFire()
     {
         Light(true);
         StartCoroutine(Ignition());
+        audioSource.PlayOneShot(lightUpFire);
     }
 
     private void Start()
