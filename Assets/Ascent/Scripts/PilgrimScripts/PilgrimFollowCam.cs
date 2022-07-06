@@ -16,7 +16,7 @@ public class PilgrimFollowCam : MonoBehaviour
     private bool UseStartCamPosition;
     [SerializeField]
     [Tooltip("Desired rotation of the camera at the start of each level.")]
-    private Quaternion StartCamRotation;
+    private Vector3 StartCamRotation;
     [SerializeField]
     [Tooltip("If false will just use current camera rotation in scene.")]
     private bool UseStartCamRotation;
@@ -31,7 +31,7 @@ public class PilgrimFollowCam : MonoBehaviour
     /// </summary>
     private Vector3 camOffset;
     private Vector3 baseCamOffset;
-    private Quaternion previousCamRotation;
+    private Vector3 previousCamRotation;
 
     private bool offsetIsBusy = false;
     private bool rotIsBusy = false;
@@ -45,12 +45,12 @@ public class PilgrimFollowCam : MonoBehaviour
         }
         if (UseStartCamRotation)
         {
-            transform.rotation = StartCamRotation;
+            transform.rotation = Quaternion.Euler(StartCamRotation);
         }
         // Get initial camera offset.
         baseCamOffset = transform.position - Target.position;
         camOffset = baseCamOffset;
-        previousCamRotation = transform.rotation;
+        previousCamRotation = transform.eulerAngles;
     }
 
     private void FixedUpdate()
@@ -60,7 +60,7 @@ public class PilgrimFollowCam : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, camDesiredPos, FollowSpeed);
     }
 
-    public Quaternion GetPrevCamRot()
+    public Vector3 GetPrevCamRot()
     {
         return previousCamRotation;
     }
@@ -97,7 +97,7 @@ public class PilgrimFollowCam : MonoBehaviour
     public void SetAngleToFace(Vector4 _angleToFace)
     {
         // Call a coroutine to smoothly lerp angle cam is facing. W value is desired duration.
-        previousCamRotation = transform.rotation;
+        previousCamRotation = transform.eulerAngles;
         rotIsBusy = false;
         rotIsBusy = true;
         StartCoroutine(LerpAngle(_angleToFace, _angleToFace.w));
