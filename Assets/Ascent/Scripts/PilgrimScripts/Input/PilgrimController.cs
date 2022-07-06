@@ -202,6 +202,7 @@ public class PilgrimController : MonoBehaviour
         // Checks if vector is empty without W value as W defaults to 1.
         Vector3 timeExclusionChecker;
 
+        _triggerZoneScript.ToggleEnabledZone();
    
         timeExclusionChecker = offset;
         if (timeExclusionChecker != Vector3.zero)
@@ -235,7 +236,7 @@ public class PilgrimController : MonoBehaviour
                 fireZoneObj = _other.gameObject;
                 break;
             case "CamAdjustZone":
-                OnCamAdjust(_other.gameObject.GetComponent<CamAdjustVals>());
+                OnCamAdjust(_other.gameObject.GetComponentInParent<CamAdjustVals>());
                 break;
             default:
                 break;
