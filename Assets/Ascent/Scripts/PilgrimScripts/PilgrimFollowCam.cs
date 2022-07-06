@@ -116,6 +116,11 @@ public class PilgrimFollowCam : MonoBehaviour
         Vector3 startPos = camOffset;
         Vector3 endPos = baseCamOffset + _offsetAddition;
 
+        if (_lerpDuration < 0)
+        {
+            _lerpDuration *= -1;
+        }
+
         while (elapsedTime <= _lerpDuration)
         {
             if (offsetIsBusy == false)
@@ -127,7 +132,7 @@ public class PilgrimFollowCam : MonoBehaviour
             yield return null;
         }
         offsetIsBusy = false;
-        baseCamOffset += _offsetAddition;
+        baseCamOffset = endPos;
     }
 
     /// <summary>

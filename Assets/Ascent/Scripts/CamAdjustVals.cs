@@ -43,7 +43,7 @@ public class CamAdjustVals : MonoBehaviour
         }
         if (isReversed)
         {
-            return DesiredRotation * -1;
+            return DesiredTranslate * -1;
         }
         else
         {
