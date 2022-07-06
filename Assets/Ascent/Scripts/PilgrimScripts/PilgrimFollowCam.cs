@@ -8,6 +8,19 @@ public class PilgrimFollowCam : MonoBehaviour
     [Tooltip("The speed at which the camera will react to the target's movement, default 0.025f")]
     private float FollowSpeed = 0.025f;
 
+    [SerializeField]
+    [Tooltip("Desired position of the camera in the world at the start of each level.")]
+    private Vector3 StartCamPosition;
+    [SerializeField]
+    [Tooltip("If false will just use current camera position in scene.")]
+    private bool UseStartCamPosition;
+    [SerializeField]
+    [Tooltip("Desired rotation of the camera at the start of each level.")]
+    private Quaternion StartCamRotation;
+    [SerializeField]
+    [Tooltip("If false will just use current camera rotation in scene.")]
+    private bool UseStartCamRotation;
+
     /// <summary>
     /// The target for the camera to follow (the pilgrim).
     /// </summary>
@@ -17,21 +30,25 @@ public class PilgrimFollowCam : MonoBehaviour
     /// Camera position in relation to the target object. Should be updated any time the desired camera position is changed.
     /// </summary>
     private Vector3 camOffset;
-
-    private Vector3 defaultCamOffset;
-    private Quaternion defaultCamRotation;
+    private Vector3 baseCamOffset;
 
     private bool offsetIsBusy = false;
     private bool rotIsBusy = false;
-    private bool returnToDefaultOffset = false;
-    private bool returnToDefaultRot = false;
 
     private void Start()
     {
+        // Set camera to the desired start position and rotation.
+        if (UseStartCamPosition)
+        {
+            transform.position = StartCamPosition;
+        }
+        if (UseStartCamRotation)
+        {
+            transform.rotation = StartCamRotation;
+        }
         // Get initial camera offset.
-        camOffset = transform.position - Target.position;
-        defaultCamOffset = camOffset;
-        defaultCamRotation = transform.rotation;
+        baseCamOffset = transform.position - Target.position;
+        camOffset = baseCamOffset;
     }
 
     private void FixedUpdate()
@@ -57,56 +74,25 @@ public class PilgrimFollowCam : MonoBehaviour
     /// Add vector to current camera offset to change cam position in relation to target.
     /// </summary>
     /// <param name="_vectorToAdd"></param>
-    /// <param name="_isExit"></param>
-    public void AddOffset(Vector4 _vectorToAdd, bool _isExit = false)
+    public void AddOffset(Vector4 _vectorToAdd)
     {
         // Call a coroutine to smoothly lerp cam offset. W value is desired duration.
-        if (_isExit)
-        {
-            returnToDefaultOffset = true;
-            if (offsetIsBusy)
-            {
-                offsetIsBusy = false;
-            }
-            StartCoroutine(LerpToDefaultOffset(_vectorToAdd.w));
-        }
-        else
-        {
-            offsetIsBusy = true;
-            if (returnToDefaultOffset)
-            {
-                returnToDefaultOffset = false;
-            }
-            StartCoroutine(LerpOffset(_vectorToAdd, _vectorToAdd.w));
-        }
+        offsetIsBusy = false;
+        offsetIsBusy = true;
+        StartCoroutine(LerpOffset(_vectorToAdd, _vectorToAdd.w));
+        
     }
 
     /// <summary>
     /// Define desired angle for the camera to end up facing.
     /// </summary>
     /// <param name="_angleToFace"></param>
-    /// <param name="_isExit"></param>
-    public void SetAngleToFace(Vector4 _angleToFace, bool _isExit = false)
+    public void SetAngleToFace(Vector4 _angleToFace)
     {
         // Call a coroutine to smoothly lerp angle cam is facing. W value is desired duration.
-        if (_isExit)
-        {
-            returnToDefaultRot = true;
-            if (rotIsBusy)
-            {
-                rotIsBusy = false;
-            }
-            StartCoroutine(LerpAngleToDefault(_angleToFace.w));
-        }
-        else
-        {
-            rotIsBusy = true;
-            if (returnToDefaultRot)
-            {
-                returnToDefaultRot = false;
-            }
-            StartCoroutine(LerpAngle(_angleToFace, _angleToFace.w));
-        }
+        rotIsBusy = false;
+        rotIsBusy = true;
+        StartCoroutine(LerpAngle(_angleToFace, _angleToFace.w));
     }
 
 
@@ -120,7 +106,7 @@ public class PilgrimFollowCam : MonoBehaviour
     {
         float elapsedTime = 0f;
         Vector3 startPos = camOffset;
-        Vector3 endPos = defaultCamOffset + _offsetAddition;
+        Vector3 endPos = baseCamOffset + _offsetAddition;
 
         while (elapsedTime <= _lerpDuration)
         {
@@ -133,31 +119,7 @@ public class PilgrimFollowCam : MonoBehaviour
             yield return null;
         }
         offsetIsBusy = false;
-    }
-
-    /// <summary>
-    /// Coroutine to smoothly lerp cam offset to default value. W value is desired duration.
-    /// </summary>
-    /// <param name="_offsetAddition"></param>
-    /// <param name="_lerpDuration"></param>
-    /// <returns></returns>
-    private IEnumerator LerpToDefaultOffset(float _lerpDuration)
-    {
-        float elapsedTime = 0f;
-        Vector3 startPos = camOffset;
-        Vector3 endPos = defaultCamOffset;
-
-        while (elapsedTime <= _lerpDuration)
-        {
-            if (returnToDefaultOffset == false)
-            {
-                yield break;
-            }
-            camOffset = Vector3.Lerp(startPos, endPos, elapsedTime / _lerpDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        returnToDefaultOffset = false;
+        baseCamOffset = baseCamOffset + _offsetAddition;
     }
 
     /// <summary>
@@ -165,7 +127,6 @@ public class PilgrimFollowCam : MonoBehaviour
     /// </summary>
     /// <param name="_angles"></param>
     /// <param name="_lerpDuration"></param>
-    /// <param name="_isExit"></param>
     /// <returns></returns>
     private IEnumerator LerpAngle(Vector3 _angles, float _lerpDuration)
     {
@@ -184,24 +145,5 @@ public class PilgrimFollowCam : MonoBehaviour
             yield return null;
         }
         rotIsBusy = false;
-    }
-
-    private IEnumerator LerpAngleToDefault(float _lerpDuration)
-    {
-        float elapsedTime = 0f;
-        Quaternion startRotation = transform.rotation;
-        Quaternion endRotation = defaultCamRotation;
-
-        while (elapsedTime <= _lerpDuration)
-        {
-            if (returnToDefaultRot == false)
-            {
-                yield break;
-            }
-            transform.rotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / _lerpDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        returnToDefaultRot = false;
     }
 }

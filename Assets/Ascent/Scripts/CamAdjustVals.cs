@@ -13,6 +13,24 @@ public class CamAdjustVals : MonoBehaviour
         "W value is duration of movement, defaults to 1. Not an addition to current angle.")]
     private Vector4 DesiredRotation;
 
+    [SerializeField]
+    [Tooltip("The initally enabled trigger zone. Should be further through the level than the Backtrack Trigger zone.")]
+    private GameObject ForwardsTrigger;
+
+    [SerializeField]
+    [Tooltip("The trigger zone to reverse the effect on the camera that the Forwards Trigger(FT) zone has. Should be placed behind the FT zone in terms of level progression." +
+        "Automatically disabled when script starts.")]
+    private GameObject BacktrackTrigger;
+
+    private bool isReversed = false;
+
+    private Vector4 previousRotation;
+
+    private void Start()
+    {
+        BacktrackTrigger.SetActive(false);
+    }
+
     /// <summary>
     /// The value that entering the zone should add to the current camera offset.
     /// </summary>
@@ -23,8 +41,14 @@ public class CamAdjustVals : MonoBehaviour
         {
             DesiredTranslate.w = 1f;
         }
-
-        return DesiredTranslate;
+        if (isReversed)
+        {
+            return DesiredRotation * -1;
+        }
+        else
+        {
+            return DesiredTranslate;
+        }
     }
 
     /// <summary>
@@ -37,8 +61,38 @@ public class CamAdjustVals : MonoBehaviour
         {
             DesiredRotation.w = 1f;
         }
+        if (isReversed && previousRotation.w == 0)
+        {
+            previousRotation.w = 1f;
+        }
 
-        return DesiredRotation;
+        if (isReversed)
+        {
+            return previousRotation;
+        }
+        else
+        {
+            return DesiredRotation;
+        }
     }
 
+    /// <summary>
+    /// Stores previous rotation of camera to use for backtracking.
+    /// </summary>
+    /// <param name="_prevRot"></param>
+    public void SetPreviousRotation(Vector3 _prevRot)
+    {
+        previousRotation = new Vector4(_prevRot.x, _prevRot.y, _prevRot.z, DesiredRotation.w);
+    }
+
+    /// <summary>
+    /// Disable currently active trigger zone and enable the inactive one. Also toggles isReversed bool.
+    /// </summary>
+    /// <returns></returns>
+    public void ToggleEnabledZone()
+    {
+        ForwardsTrigger.SetActive(isReversed);
+        isReversed = !isReversed;
+        BacktrackTrigger.SetActive(isReversed);
+    }
 }
