@@ -212,7 +212,7 @@ public class PilgrimController : MonoBehaviour
         // Apply rotation.
         FollowCam.SetAngleToFace(directionToFace);
         // Set current cam rotation for backtracking.
-        Quaternion curCamRot = FollowCam.gameObject.transform.rotation;
+        Quaternion curCamRot = FollowCam.GetPrevCamRot();
         _triggerZoneScript.SetPreviousRotation(new Vector3(curCamRot.x, curCamRot.y, curCamRot.z));
         
         _triggerZoneScript.ToggleEnabledZone();

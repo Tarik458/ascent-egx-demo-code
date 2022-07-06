@@ -31,6 +31,7 @@ public class PilgrimFollowCam : MonoBehaviour
     /// </summary>
     private Vector3 camOffset;
     private Vector3 baseCamOffset;
+    private Quaternion previousCamRotation;
 
     private bool offsetIsBusy = false;
     private bool rotIsBusy = false;
@@ -49,6 +50,7 @@ public class PilgrimFollowCam : MonoBehaviour
         // Get initial camera offset.
         baseCamOffset = transform.position - Target.position;
         camOffset = baseCamOffset;
+        previousCamRotation = transform.rotation;
     }
 
     private void FixedUpdate()
@@ -56,6 +58,11 @@ public class PilgrimFollowCam : MonoBehaviour
         // Using FixedUpdate and no time.deltatime solved camera jitter issue.
         Vector3 camDesiredPos = Target.position + camOffset;
         transform.position = Vector3.Lerp(transform.position, camDesiredPos, FollowSpeed);
+    }
+
+    public Quaternion GetPrevCamRot()
+    {
+        return previousCamRotation;
     }
 
     /// <summary>
@@ -90,6 +97,7 @@ public class PilgrimFollowCam : MonoBehaviour
     public void SetAngleToFace(Vector4 _angleToFace)
     {
         // Call a coroutine to smoothly lerp angle cam is facing. W value is desired duration.
+        previousCamRotation = transform.rotation;
         rotIsBusy = false;
         rotIsBusy = true;
         StartCoroutine(LerpAngle(_angleToFace, _angleToFace.w));
@@ -119,7 +127,7 @@ public class PilgrimFollowCam : MonoBehaviour
             yield return null;
         }
         offsetIsBusy = false;
-        baseCamOffset = baseCamOffset + _offsetAddition;
+        baseCamOffset += _offsetAddition;
     }
 
     /// <summary>
@@ -143,6 +151,7 @@ public class PilgrimFollowCam : MonoBehaviour
             transform.rotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / _lerpDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
+            transform.rotation = endRotation;
         }
         rotIsBusy = false;
     }
