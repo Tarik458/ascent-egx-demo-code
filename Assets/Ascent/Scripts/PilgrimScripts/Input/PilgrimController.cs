@@ -201,8 +201,6 @@ public class PilgrimController : MonoBehaviour
 
         // Checks if vector is empty without W value as W defaults to 1.
         Vector3 timeExclusionChecker;
-
-        _triggerZoneScript.ToggleEnabledZone();
    
         timeExclusionChecker = offset;
         if (timeExclusionChecker != Vector3.zero)
@@ -219,7 +217,8 @@ public class PilgrimController : MonoBehaviour
             // Set current cam rotation for backtracking.
             Quaternion curCamRot = FollowCam.gameObject.transform.rotation;
             _triggerZoneScript.SetPreviousRotation(new Vector3(curCamRot.x, curCamRot.y, curCamRot.z));
-        }        
+        }
+        _triggerZoneScript.ToggleEnabledZone();
     }
 
 
