@@ -193,7 +193,6 @@ public class PilgrimController : MonoBehaviour
     /// Handle passing camera adjustments to the camera script.
     /// </summary>
     /// <param name="_triggerZoneScript"></param>
-    /// <param name="_isExit"></param>
     private void OnCamAdjust(CamAdjustVals _triggerZoneScript)
     {
         Vector4 offset = _triggerZoneScript.GetAdditionToOffset();
@@ -209,15 +208,13 @@ public class PilgrimController : MonoBehaviour
             FollowCam.AddOffset(offset);
         }
 
-        timeExclusionChecker = directionToFace;
-        if (timeExclusionChecker != Vector3.zero)
-        {
-            // Apply rotation.
-            FollowCam.SetAngleToFace(directionToFace);
-            // Set current cam rotation for backtracking.
-            Quaternion curCamRot = FollowCam.gameObject.transform.rotation;
-            _triggerZoneScript.SetPreviousRotation(new Vector3(curCamRot.x, curCamRot.y, curCamRot.z));
-        }
+        
+        // Apply rotation.
+        FollowCam.SetAngleToFace(directionToFace);
+        // Set current cam rotation for backtracking.
+        Quaternion curCamRot = FollowCam.gameObject.transform.rotation;
+        _triggerZoneScript.SetPreviousRotation(new Vector3(curCamRot.x, curCamRot.y, curCamRot.z));
+        
         _triggerZoneScript.ToggleEnabledZone();
     }
 
