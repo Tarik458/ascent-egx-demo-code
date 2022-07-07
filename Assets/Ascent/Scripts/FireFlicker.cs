@@ -34,21 +34,28 @@ public class FireFlicker : MonoBehaviour
     AudioSource audioSource;
 
 
+    private bool isFlickering;
+
     public void LightFire()
     {
-        Light(true);
-        StartCoroutine(Ignition());
-        audioSource.PlayOneShot(lightUpFire);
+        if (!IsLit)
+        {
+            IsLit = true;
+            Light(IsLit);
+            StartCoroutine(Ignition());
+            audioSource.PlayOneShot(lightUpFire);
+        }
     }
 
     private void Start()
     {
         Light(IsLit);
+        isFlickering = IsLit;
     }
 
     private void FixedUpdate()
     {
-        if (IsLit)
+        if (isFlickering)
         {
             AffectedLight.intensity = Mathf.Lerp(AffectedLight.intensity, Random.Range(MinBrightness, MaxBrightness), FlickerSpeed);
         }
@@ -72,8 +79,7 @@ public class FireFlicker : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
-        IsLit = true;
+        isFlickering = true;
     }
 
     /// <summary>
