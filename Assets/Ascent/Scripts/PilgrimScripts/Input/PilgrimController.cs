@@ -45,6 +45,8 @@ public class PilgrimController : MonoBehaviour
 
 
     private Vector3 moveDirection;
+    private float camFacingDirection;
+
 
     private bool isCrouched = false;
 
@@ -94,24 +96,28 @@ public class PilgrimController : MonoBehaviour
     private void Start()
     {
         jumpRaycastDistance = (ColliderTransform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.2f;
+        camFacingDirection = FollowCam.transform.eulerAngles.y;
     }
 
     private void Update()
     {
+        camFacingDirection = FollowCam.transform.eulerAngles.y;
+        Vector3 camRelativeMoveDir = Quaternion.Euler(0, camFacingDirection, 0) * moveDirection;
+
         // Move the pilgrim smoothly in correct direction.
         if (isCrouched)
         {
-            MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * moveDirection;
+            MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * camRelativeMoveDir;
         }
         else
         {
-            MainRB.position += MoveSpeed * Time.deltaTime * moveDirection;
+            MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
         }
 
         // While moving rotate the pilgrim to face direction of travel.
         if (moveDirection != Vector3.zero)
         {
-            Quaternion rotateTo = Quaternion.LookRotation(moveDirection, Vector3.up);
+            Quaternion rotateTo = Quaternion.LookRotation(camRelativeMoveDir, Vector3.up);
 
             VisualComponentTransform.rotation = Quaternion.RotateTowards(VisualComponentTransform.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
         }
