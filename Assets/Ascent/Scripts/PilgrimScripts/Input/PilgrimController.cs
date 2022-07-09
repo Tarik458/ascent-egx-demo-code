@@ -214,12 +214,12 @@ public class PilgrimController : MonoBehaviour
             FollowCam.AddOffset(offset);
         }
 
-        
+        Vector3 curCamRot = FollowCam.GetPrevCamRot();
+        _triggerZoneScript.SetPreviousRotation(curCamRot);
         // Apply rotation.
         FollowCam.SetAngleToFace(directionToFace);
         // Set current cam rotation for backtracking.
-        Vector3 curCamRot = FollowCam.GetPrevCamRot();
-        _triggerZoneScript.SetPreviousRotation(curCamRot);
+
         
         _triggerZoneScript.ToggleEnabledZone();
     }

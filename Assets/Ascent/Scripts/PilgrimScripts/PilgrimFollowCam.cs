@@ -36,6 +36,9 @@ public class PilgrimFollowCam : MonoBehaviour
     private bool offsetIsBusy = false;
     private bool rotIsBusy = false;
 
+    private Coroutine prevOffsetLerp;
+    private Coroutine prevRotLerp;
+
     private void Start()
     {
         // Set camera to the desired start position and rotation.
@@ -84,9 +87,13 @@ public class PilgrimFollowCam : MonoBehaviour
     public void AddOffset(Vector4 _vectorToAdd)
     {
         // Call a coroutine to smoothly lerp cam offset. W value is desired duration.
-        offsetIsBusy = false;
+        if (offsetIsBusy)
+        {
+            StopCoroutine(prevOffsetLerp);
+        }
+
         offsetIsBusy = true;
-        StartCoroutine(LerpOffset(_vectorToAdd, _vectorToAdd.w));
+        prevOffsetLerp = StartCoroutine(LerpOffset(_vectorToAdd, _vectorToAdd.w));
         
     }
 
@@ -97,10 +104,14 @@ public class PilgrimFollowCam : MonoBehaviour
     public void SetAngleToFace(Vector4 _angleToFace)
     {
         // Call a coroutine to smoothly lerp angle cam is facing. W value is desired duration.
-        previousCamRotation = transform.eulerAngles;
-        rotIsBusy = false;
+        if (rotIsBusy)
+        {
+            StopCoroutine(prevRotLerp);
+        }
+
         rotIsBusy = true;
-        StartCoroutine(LerpAngle(_angleToFace, _angleToFace.w));
+        prevRotLerp = StartCoroutine(LerpAngle(_angleToFace, _angleToFace.w));
+        previousCamRotation = _angleToFace;
     }
 
 
@@ -115,6 +126,7 @@ public class PilgrimFollowCam : MonoBehaviour
         float elapsedTime = 0f;
         Vector3 startPos = camOffset;
         Vector3 endPos = baseCamOffset + _offsetAddition;
+        baseCamOffset = endPos;
 
         if (_lerpDuration < 0)
         {
@@ -123,16 +135,11 @@ public class PilgrimFollowCam : MonoBehaviour
 
         while (elapsedTime <= _lerpDuration)
         {
-            if (offsetIsBusy == false)
-            {
-                yield break;
-            }
             camOffset = Vector3.Lerp(startPos, endPos, elapsedTime / _lerpDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         offsetIsBusy = false;
-        baseCamOffset = endPos;
     }
 
     /// <summary>
@@ -149,10 +156,6 @@ public class PilgrimFollowCam : MonoBehaviour
 
         while (elapsedTime <= _lerpDuration)
         {
-            if (rotIsBusy == false)
-            {
-                yield break;
-            }
             transform.rotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / _lerpDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
