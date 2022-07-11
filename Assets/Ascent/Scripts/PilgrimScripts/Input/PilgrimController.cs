@@ -55,7 +55,7 @@ public class PilgrimController : MonoBehaviour
 
     private bool isJumping = false;
     // Distance to raycast downwards from pilgrim for groundcheck, should be half height + small margin.
-    private float jumpRaycastDistance;
+    private float findFloorRaycastDist;
     private float jumpCheckTimeDelay = 0.5f;
     private float timeSinceJump = 0f;
 
@@ -95,7 +95,7 @@ public class PilgrimController : MonoBehaviour
 
     private void Start()
     {
-        jumpRaycastDistance = (ColliderTransform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.2f;
+        findFloorRaycastDist = (ColliderTransform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.2f;
         camFacingDirection = FollowCam.transform.eulerAngles.y;
     }
 
@@ -129,7 +129,7 @@ public class PilgrimController : MonoBehaviour
         // Check if player is on the ground.
         if (isJumping)
         {
-            if (Physics.Raycast(transform.position, Vector3.down, jumpRaycastDistance) && timeSinceJump > jumpCheckTimeDelay)
+            if (Physics.Raycast(transform.position, Vector3.down, findFloorRaycastDist) && timeSinceJump > jumpCheckTimeDelay)
             {
                 isJumping = false;
             }
@@ -153,7 +153,7 @@ public class PilgrimController : MonoBehaviour
     /// </summary>
     private void OnJump()
     {
-        if (!isCrouched && !isJumping && Physics.Raycast(transform.position, Vector3.down, jumpRaycastDistance))
+        if (!isCrouched && !isJumping && Physics.Raycast(transform.position, Vector3.down, findFloorRaycastDist))
         {
             isJumping = true;
             timeSinceJump = 0f;
