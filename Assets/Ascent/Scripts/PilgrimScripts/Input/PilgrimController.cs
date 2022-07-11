@@ -56,6 +56,9 @@ public class PilgrimController : MonoBehaviour
     private bool isJumping = false;
     // Distance to raycast downwards from pilgrim for groundcheck, should be half height + small margin.
     private float findFloorRaycastDist;
+    private float findWallRaycastDist;
+    private Vector3 wallCastPos;
+
     private float jumpCheckTimeDelay = 0.5f;
     private float timeSinceJump = 0f;
 
@@ -96,6 +99,7 @@ public class PilgrimController : MonoBehaviour
     private void Start()
     {
         findFloorRaycastDist = (ColliderTransform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.2f;
+        findWallRaycastDist = ColliderTransform.gameObject.GetComponent<CapsuleCollider>().radius + 0.1f;
         camFacingDirection = FollowCam.transform.eulerAngles.y;
     }
 
@@ -104,10 +108,13 @@ public class PilgrimController : MonoBehaviour
         camFacingDirection = FollowCam.transform.eulerAngles.y;
         Vector3 camRelativeMoveDir = Quaternion.Euler(0, camFacingDirection, 0) * moveDirection;
 
+        // Used to stop character from sticking to walls.
+         wallCastPos = new(transform.position.x, transform.position.y - 0.4f, transform.position.z);
+
         // Move the pilgrim smoothly in correct direction.
-        if (moveDirection == Vector3.zero)
+        if (moveDirection == Vector3.zero || Physics.Raycast(wallCastPos, camRelativeMoveDir, findWallRaycastDist))
         {
-            MainRB.velocity = new Vector3(moveDirection.x, MainRB.velocity.y, moveDirection.z);
+            MainRB.velocity = new Vector3(0f, MainRB.velocity.y, 0f);
         }
         else
         {
@@ -119,12 +126,14 @@ public class PilgrimController : MonoBehaviour
             {
                 MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
             }
+        }
 
+        if (moveDirection != Vector3.zero)
+        {
             // While moving rotate the pilgrim to face direction of travel.
             Quaternion rotateTo = Quaternion.LookRotation(camRelativeMoveDir, Vector3.up);
             VisualComponentTransform.rotation = Quaternion.RotateTowards(VisualComponentTransform.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
         }
-
 
         // Check if player is on the ground.
         if (isJumping)
