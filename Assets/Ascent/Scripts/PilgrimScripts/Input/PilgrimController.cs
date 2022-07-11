@@ -105,20 +105,23 @@ public class PilgrimController : MonoBehaviour
         Vector3 camRelativeMoveDir = Quaternion.Euler(0, camFacingDirection, 0) * moveDirection;
 
         // Move the pilgrim smoothly in correct direction.
-        if (isCrouched)
+        if (moveDirection == Vector3.zero)
         {
-            MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+            MainRB.velocity = new Vector3(moveDirection.x, MainRB.velocity.y, moveDirection.z);
         }
         else
         {
-            MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
-        }
+            if (isCrouched)
+            {
+                MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+            }
+            else
+            {
+                MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+            }
 
-        // While moving rotate the pilgrim to face direction of travel.
-        if (moveDirection != Vector3.zero)
-        {
+            // While moving rotate the pilgrim to face direction of travel.
             Quaternion rotateTo = Quaternion.LookRotation(camRelativeMoveDir, Vector3.up);
-
             VisualComponentTransform.rotation = Quaternion.RotateTowards(VisualComponentTransform.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
         }
 
