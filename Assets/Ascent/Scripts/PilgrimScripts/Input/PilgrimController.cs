@@ -200,6 +200,8 @@ public class PilgrimController : MonoBehaviour
                 transform.Translate(new Vector3(0f, -(CrouchHeight / 2), 0f));
                 break;
             case false:
+                // Translate pilgrim upwards to negate occasional bouncing caused by funky physics.
+                transform.Translate(new Vector3(0f, (CrouchHeight / 2), 0f));
                 VisualComponentTransform.localScale = new Vector3(VisualComponentTransform.localScale.x, VisualComponentTransform.localScale.y / CrouchHeight, VisualComponentTransform.localScale.z);
                 ColliderTransform.localScale = new Vector3(ColliderTransform.localScale.x, ColliderTransform.localScale.y / CrouchHeight, ColliderTransform.localScale.z);
                 break;
