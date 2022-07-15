@@ -13,17 +13,21 @@ public class OptionsAndSettings : MonoBehaviour
     /// </summary>
     private List<string> resolutionOptions = new();
 
-    private bool resChanged = false;
+    private bool fullScreenEnabled;
 
+
+    // Changed settings.
+    private bool resChanged = false;
+    private bool fullScrnChanged = false;
 
     private void Awake()
     {
         // cehck for save file -> if yes then load it
         // if not found save file
 
-        resolutions = Screen.resolutions;
-
         // Gets a list of available resolution options.
+        resolutions = Screen.resolutions;
+        // Cycles through list to find current resolution.
         for (int i = 0; i < resolutions.Length; i++)
         {
             string option = resolutions[i].width + " x " + resolutions[i].height;
@@ -33,7 +37,8 @@ public class OptionsAndSettings : MonoBehaviour
                 SetResolution(i);
             }
         }
-        // save resolutions and current resolution
+
+        // save resolutions and current resolution if not loaded
 
     }
 
@@ -48,6 +53,11 @@ public class OptionsAndSettings : MonoBehaviour
             PlayerPrefs.SetInt("ResolutionPref", currentResolutionIndex);
             resChanged = false;
         }
+        if (fullScrnChanged)
+        {
+            PlayerPrefs.SetInt("FullScreenPref", BoolToInt(fullScreenEnabled));
+            fullScrnChanged = false;
+        }
 
 
         PlayerPrefs.Save();
@@ -61,8 +71,44 @@ public class OptionsAndSettings : MonoBehaviour
         resChanged = true;
     }
 
+    public void SetFullScreen(bool _enabled)
+    {
+        fullScreenEnabled = _enabled;
+        Screen.fullScreen = fullScreenEnabled;
+        fullScrnChanged = true;
+    }
 
-
-
+    /// <summary>
+    /// Returns '1' if input bool is 'true' and '0' if input bool is 'false'.
+    /// </summary>
+    /// <param name="_input"></param>
+    /// <returns></returns>
+    private int BoolToInt(bool _input)
+    {
+        if (_input)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    /// <summary>
+    /// Returns 'true' if input int is '1' and 'false' if input int is '0'.
+    /// </summary>
+    /// <param name="_input"></param>
+    /// <returns></returns>
+    private bool IntToBool(int _input)
+    {
+        if (_input == 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
 }
