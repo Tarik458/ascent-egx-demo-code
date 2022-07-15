@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class OptionsAndSettings : MonoBehaviour
 {
+    [SerializeField]
+    [Tooltip("The main audio mixer, used for applying volume adjustments.")]
+    private AudioMixer audioMixer;
 
     // Actual available resolutions.
     private Resolution[] resolutions;
@@ -15,10 +19,17 @@ public class OptionsAndSettings : MonoBehaviour
 
     private bool fullScreenEnabled;
 
+    private float mainVolume;
+    private float musicVolume;
+    private float speechVolume;
 
     // Changed settings.
     private bool resChanged = false;
     private bool fullScrnChanged = false;
+
+    private bool mainVolumeChanged = false;
+    private bool musicVolumeChanged = false;
+    private bool speechVolumeChanged = false;
 
     private void Awake()
     {
@@ -58,7 +69,21 @@ public class OptionsAndSettings : MonoBehaviour
             PlayerPrefs.SetInt("FullScreenPref", BoolToInt(fullScreenEnabled));
             fullScrnChanged = false;
         }
-
+        if (mainVolumeChanged)
+        {
+            PlayerPrefs.SetFloat("MainVolumePref", mainVolume);
+            mainVolumeChanged = false;
+        }
+        if (musicVolumeChanged)
+        {
+            PlayerPrefs.SetFloat("MusicVolumePref", musicVolume);
+            musicVolumeChanged = false;
+        }
+        if (speechVolumeChanged)
+        {
+            PlayerPrefs.SetFloat("SpeechVolumePref", speechVolume);
+            speechVolumeChanged = false;
+        }
 
         PlayerPrefs.Save();
     }
@@ -76,6 +101,27 @@ public class OptionsAndSettings : MonoBehaviour
         fullScreenEnabled = _enabled;
         Screen.fullScreen = fullScreenEnabled;
         fullScrnChanged = true;
+    }
+
+    public void SetMainVolume(float _volume)
+    {
+        mainVolume = _volume;
+        audioMixer.SetFloat("MainVolume", mainVolume);
+        mainVolumeChanged = true;
+    }
+
+    public void SetMusicVolume(float _volume)
+    {
+        musicVolume = _volume;
+        audioMixer.SetFloat("MusicVolume", musicVolume);
+        musicVolumeChanged = true;
+    }
+
+    public void SetSpeechVolume(float _volume)
+    {
+        speechVolume = _volume;
+        audioMixer.SetFloat("SpeechVolume", speechVolume);
+        speechVolumeChanged = true;
     }
 
     /// <summary>
