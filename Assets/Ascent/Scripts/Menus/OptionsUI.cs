@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class OptionsUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    OptionsAndSettings optionsAndSettings;
+
+    private void Awake()
     {
-        
+        optionsAndSettings = FindObjectOfType<OptionsAndSettings>();
+
     }
 }
