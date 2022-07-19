@@ -17,14 +17,18 @@ public class OptionsAndSettings : MonoBehaviour
     /// </summary>
     private List<string> resolutionOptions = new();
 
+    private int qualityLevel = QualitySettings.GetQualityLevel();
+
     private bool fullScreenEnabled;
 
     private float mainVolume;
     private float musicVolume;
     private float speechVolume;
 
+
     // Changed settings.
     private bool resChanged = false;
+    private bool qualityChanged = false;
     private bool fullScrnChanged = false;
 
     private bool mainVolumeChanged = false;
@@ -46,9 +50,6 @@ public class OptionsAndSettings : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
             instance = this.gameObject;
         }
-
-        // cehck for save file -> if yes then load it
-        // if not found save file
 
         // Gets a list of available resolution options.
         resolutions = Screen.resolutions;
@@ -80,6 +81,11 @@ public class OptionsAndSettings : MonoBehaviour
             PlayerPrefs.SetInt("ResolutionPref", currentResolutionIndex);
             resChanged = false;
         }
+        if (qualityChanged || PlayerPrefs.HasKey("QualityPref") == false)
+        {
+            PlayerPrefs.SetInt("QualityPref", qualityLevel);
+            qualityChanged = false;
+        }
         if (fullScrnChanged || PlayerPrefs.HasKey("FullScreenPref") == false)
         {
             PlayerPrefs.SetInt("FullScreenPref", BoolToInt(fullScreenEnabled));
@@ -106,30 +112,44 @@ public class OptionsAndSettings : MonoBehaviour
 
     public void  LoadSettings()
     {
-        if(PlayerPrefs.HasKey("ResolutionPref"))
+        if (PlayerPrefs.HasKey("ResolutionPref"))
         {
             SetResolution(PlayerPrefs.GetInt("ResolutionPref")); 
         }
 
-        if(PlayerPrefs.HasKey("FullScreenPref"))
+        if (PlayerPrefs.HasKey("QualityPref"))
+        {
+            SetQuality(PlayerPrefs.GetInt("QualityPref"));
+        }
+
+        if (PlayerPrefs.HasKey("FullScreenPref"))
         {
             SetFullScreen(IntToBool(PlayerPrefs.GetInt("FullScreenPref")));
         }
 
-        if(PlayerPrefs.HasKey("MainVolumePref"))
+        if (PlayerPrefs.HasKey("MainVolumePref"))
         {
             SetMainVolume(PlayerPrefs.GetFloat("MainVolumePref"));
         }
 
-        if(PlayerPrefs.HasKey("MusicVolumePref"))
+        if (PlayerPrefs.HasKey("MusicVolumePref"))
         {
             SetMusicVolume(PlayerPrefs.GetFloat("MusicVolumePref"));
         }
 
-        if(PlayerPrefs.HasKey("SpeechVolumePref"))
+        if (PlayerPrefs.HasKey("SpeechVolumePref"))
         {
             SetSpeechVolume(PlayerPrefs.GetFloat("SpeechVolumePref"));
         }
+    }
+
+    /// <summary>
+    /// Pass this function a reference to the script calling it so it can send all the required values to display over.
+    /// </summary>
+    /// <param name="_sendValuesHere"></param>
+    public void GetAllValuesForUIDisplay(OptionsUI _sendValuesHere)
+    {
+
     }
 
 
@@ -138,6 +158,13 @@ public class OptionsAndSettings : MonoBehaviour
         Screen.SetResolution(resolutions[_resIndex].width, resolutions[_resIndex].height, Screen.fullScreenMode);
         currentResolutionIndex = _resIndex;
         resChanged = true;
+    }
+
+    public void SetQuality(int _qualIndex)
+    {
+        qualityLevel = _qualIndex;
+        QualitySettings.SetQualityLevel(qualityLevel, true);
+        qualityChanged = true;
     }
 
     public void SetFullScreen(bool _enabled)
