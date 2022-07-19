@@ -31,26 +31,42 @@ public class OptionsAndSettings : MonoBehaviour
     private bool musicVolumeChanged = false;
     private bool speechVolumeChanged = false;
 
+
+    private static GameObject instance;
+
     private void Awake()
     {
+        // Keep only this object for the settings, destroy object if one already exists.
+        if (instance != null)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(this.gameObject);
+            instance = this.gameObject;
+        }
+
         // cehck for save file -> if yes then load it
         // if not found save file
 
         // Gets a list of available resolution options.
         resolutions = Screen.resolutions;
-        // Cycles through list to find current resolution.
-        for (int i = 0; i < resolutions.Length; i++)
+        if (PlayerPrefs.HasKey("ResolutionPref") == false)
         {
-            string option = resolutions[i].width + " x " + resolutions[i].height;
-            resolutionOptions.Add(option);
-            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+            // Cycles through list to find current resolution.
+            for (int i = 0; i < resolutions.Length; i++)
             {
-                SetResolution(i);
+                string option = resolutions[i].width + " x " + resolutions[i].height;
+                resolutionOptions.Add(option);
+                if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+                {
+                    SetResolution(i);
+                }
             }
         }
 
-        // save resolutions and current resolution if not loaded
-
+        LoadSettings();
     }
 
     /// <summary>
@@ -59,33 +75,61 @@ public class OptionsAndSettings : MonoBehaviour
     public void SaveSettings()
     {
 
-        if (resChanged)
+        if (resChanged || PlayerPrefs.HasKey("ResolutionPref") == false)
         {
             PlayerPrefs.SetInt("ResolutionPref", currentResolutionIndex);
             resChanged = false;
         }
-        if (fullScrnChanged)
+        if (fullScrnChanged || PlayerPrefs.HasKey("FullScreenPref") == false)
         {
             PlayerPrefs.SetInt("FullScreenPref", BoolToInt(fullScreenEnabled));
             fullScrnChanged = false;
         }
-        if (mainVolumeChanged)
+        if (mainVolumeChanged || PlayerPrefs.HasKey("MainVolumePref") == false)
         {
             PlayerPrefs.SetFloat("MainVolumePref", mainVolume);
             mainVolumeChanged = false;
         }
-        if (musicVolumeChanged)
+        if (musicVolumeChanged || PlayerPrefs.HasKey("MusicVolumePref") == false)
         {
             PlayerPrefs.SetFloat("MusicVolumePref", musicVolume);
             musicVolumeChanged = false;
         }
-        if (speechVolumeChanged)
+        if (speechVolumeChanged || PlayerPrefs.HasKey("SpeechVolumePref") == false)
         {
             PlayerPrefs.SetFloat("SpeechVolumePref", speechVolume);
             speechVolumeChanged = false;
         }
 
         PlayerPrefs.Save();
+    }
+
+    public void  LoadSettings()
+    {
+        if(PlayerPrefs.HasKey("ResolutionPref"))
+        {
+            SetResolution(PlayerPrefs.GetInt("ResolutionPref")); 
+        }
+
+        if(PlayerPrefs.HasKey("FullScreenPref"))
+        {
+            SetFullScreen(IntToBool(PlayerPrefs.GetInt("FullScreenPref")));
+        }
+
+        if(PlayerPrefs.HasKey("MainVolumePref"))
+        {
+            SetMainVolume(PlayerPrefs.GetFloat("MainVolumePref"));
+        }
+
+        if(PlayerPrefs.HasKey("MusicVolumePref"))
+        {
+            SetMusicVolume(PlayerPrefs.GetFloat("MusicVolumePref"));
+        }
+
+        if(PlayerPrefs.HasKey("SpeechVolumePref"))
+        {
+            SetSpeechVolume(PlayerPrefs.GetFloat("SpeechVolumePref"));
+        }
     }
 
 
