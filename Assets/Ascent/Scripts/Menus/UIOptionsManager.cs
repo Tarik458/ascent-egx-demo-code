@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OptionsUI : MonoBehaviour
+public class UIOptionsManager : MonoBehaviour
 {
 
     OptionsAndSettings optionsAndSettings;
@@ -12,4 +12,9 @@ public class OptionsUI : MonoBehaviour
         optionsAndSettings = FindObjectOfType<OptionsAndSettings>();
 
     }
+
+
+
+
+
 }
