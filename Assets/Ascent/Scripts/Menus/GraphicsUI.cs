@@ -20,5 +20,13 @@ public class GraphicsUI : MonoBehaviour
     private void Awake()
     {
         optionsAndSettings = FindObjectOfType<OptionsAndSettings>();
+
+        ResolutionDropdown.ClearOptions();
+        ResolutionDropdown.AddOptions(optionsAndSettings.GetResolutionList());
+        ResolutionDropdown.value = optionsAndSettings.GetResolutionIndex();
+
+        QualityDropdown.value = optionsAndSettings.GetQualityLevel();
+
+        FullScreenToggle.isOn = optionsAndSettings.GetFullScreen();
     }
 }
