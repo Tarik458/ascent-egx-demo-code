@@ -19,7 +19,7 @@ public class OptionsAndSettings : MonoBehaviour
 
     private int qualityLevel = QualitySettings.GetQualityLevel();
 
-    private bool fullScreenEnabled;
+    private bool isFullScreen;
 
     private float mainVolume;
     private float musicVolume;
@@ -62,7 +62,7 @@ public class OptionsAndSettings : MonoBehaviour
                 resolutionOptions.Add(option);
                 if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
                 {
-                    SetResolution(i);
+                    SetResolutionIndex(i);
                 }
             }
         }
@@ -88,7 +88,7 @@ public class OptionsAndSettings : MonoBehaviour
         }
         if (fullScrnChanged || PlayerPrefs.HasKey("FullScreenPref") == false)
         {
-            PlayerPrefs.SetInt("FullScreenPref", BoolToInt(fullScreenEnabled));
+            PlayerPrefs.SetInt("FullScreenPref", BoolToInt(isFullScreen));
             fullScrnChanged = false;
         }
         if (mainVolumeChanged || PlayerPrefs.HasKey("MainVolumePref") == false)
@@ -114,12 +114,12 @@ public class OptionsAndSettings : MonoBehaviour
     {
         if (PlayerPrefs.HasKey("ResolutionPref"))
         {
-            SetResolution(PlayerPrefs.GetInt("ResolutionPref")); 
+            SetResolutionIndex(PlayerPrefs.GetInt("ResolutionPref")); 
         }
 
         if (PlayerPrefs.HasKey("QualityPref"))
         {
-            SetQuality(PlayerPrefs.GetInt("QualityPref"));
+            SetQualityLevel(PlayerPrefs.GetInt("QualityPref"));
         }
 
         if (PlayerPrefs.HasKey("FullScreenPref"))
@@ -143,42 +143,54 @@ public class OptionsAndSettings : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Pass this function a reference to the script calling it so it can send all the required values to display over.
-    /// </summary>
-    /// <param name="_sendValuesHere"></param>
-    public void GetAllValuesForUIDisplay(OptionsUI _sendValuesHere)
+    public List<string> GetResolutionList()
     {
-
+        return resolutionOptions;
     }
 
-
-    public void SetResolution(int _resIndex)
+    public void SetResolutionIndex(int _resIndex)
     {
         Screen.SetResolution(resolutions[_resIndex].width, resolutions[_resIndex].height, Screen.fullScreenMode);
         currentResolutionIndex = _resIndex;
         resChanged = true;
     }
+    public int GetResolutionIndex()
+    {
+        return currentResolutionIndex;
+    }
 
-    public void SetQuality(int _qualIndex)
+    public void SetQualityLevel(int _qualIndex)
     {
         qualityLevel = _qualIndex;
         QualitySettings.SetQualityLevel(qualityLevel, true);
         qualityChanged = true;
     }
+    public int GetQualityLevel()
+    {
+        return qualityLevel;
+    }
 
     public void SetFullScreen(bool _enabled)
     {
-        fullScreenEnabled = _enabled;
-        Screen.fullScreen = fullScreenEnabled;
+        isFullScreen = _enabled;
+        Screen.fullScreen = isFullScreen;
         fullScrnChanged = true;
     }
+    public bool GetFullScreen()
+    {
+        return isFullScreen;
+    }
+
 
     public void SetMainVolume(float _volume)
     {
         mainVolume = _volume;
         audioMixer.SetFloat("MainVolume", mainVolume);
         mainVolumeChanged = true;
+    }
+    public float GetMainVolume()
+    {
+        return mainVolume;
     }
 
     public void SetMusicVolume(float _volume)
@@ -187,12 +199,20 @@ public class OptionsAndSettings : MonoBehaviour
         audioMixer.SetFloat("MusicVolume", musicVolume);
         musicVolumeChanged = true;
     }
+    public float GetMusicVolume()
+    {
+        return musicVolume;
+    }
 
     public void SetSpeechVolume(float _volume)
     {
         speechVolume = _volume;
         audioMixer.SetFloat("SpeechVolume", speechVolume);
         speechVolumeChanged = true;
+    }
+    public float GetSpeechVolume()
+    {
+        return speechVolume;
     }
 
     /// <summary>

@@ -15,8 +15,10 @@ public class GraphicsUI : MonoBehaviour
     [SerializeField]
     private Toggle FullScreenToggle;
 
+    private OptionsAndSettings optionsAndSettings;
+
     private void Awake()
     {
-        
+        optionsAndSettings = FindObjectOfType<OptionsAndSettings>();
     }
 }
