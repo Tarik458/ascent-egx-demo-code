@@ -55,7 +55,10 @@ public class PilgrimController : MonoBehaviour
 
     private bool isJumping = false;
     // Distance to raycast downwards from pilgrim for groundcheck, should be half height + small margin.
-    private float jumpRaycastDistance;
+    private float findFloorRaycastDist;
+    private float findWallRaycastDist;
+    private Vector3 wallCastPos;
+
     private float jumpCheckTimeDelay = 0.5f;
     private float timeSinceJump = 0f;
 
@@ -95,7 +98,8 @@ public class PilgrimController : MonoBehaviour
 
     private void Start()
     {
-        jumpRaycastDistance = (ColliderTransform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.2f;
+        findFloorRaycastDist = (ColliderTransform.gameObject.GetComponent<CapsuleCollider>().height / 2) + 0.2f;
+        findWallRaycastDist = ColliderTransform.gameObject.GetComponent<CapsuleCollider>().radius + 0.1f;
         camFacingDirection = FollowCam.transform.eulerAngles.y;
     }
 
@@ -104,29 +108,37 @@ public class PilgrimController : MonoBehaviour
         camFacingDirection = FollowCam.transform.eulerAngles.y;
         Vector3 camRelativeMoveDir = Quaternion.Euler(0, camFacingDirection, 0) * moveDirection;
 
+        // Used to stop character from sticking to walls.
+         wallCastPos = new(transform.position.x, transform.position.y - 0.4f, transform.position.z);
+
         // Move the pilgrim smoothly in correct direction.
-        if (isCrouched)
+        if (moveDirection == Vector3.zero || Physics.Raycast(wallCastPos, camRelativeMoveDir, findWallRaycastDist))
         {
-            MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+            MainRB.velocity = new Vector3(0f, MainRB.velocity.y, 0f);
         }
         else
         {
-            MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+            if (isCrouched)
+            {
+                MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+            }
+            else
+            {
+                MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+            }
         }
 
-        // While moving rotate the pilgrim to face direction of travel.
         if (moveDirection != Vector3.zero)
         {
+            // While moving rotate the pilgrim to face direction of travel.
             Quaternion rotateTo = Quaternion.LookRotation(camRelativeMoveDir, Vector3.up);
-
             VisualComponentTransform.rotation = Quaternion.RotateTowards(VisualComponentTransform.rotation, rotateTo.normalized, RotateSpeed * Time.deltaTime);
         }
-
 
         // Check if player is on the ground.
         if (isJumping)
         {
-            if (Physics.Raycast(transform.position, Vector3.down, jumpRaycastDistance) && timeSinceJump > jumpCheckTimeDelay)
+            if (Physics.Raycast(transform.position, Vector3.down, findFloorRaycastDist) && timeSinceJump > jumpCheckTimeDelay)
             {
                 isJumping = false;
             }
@@ -150,7 +162,7 @@ public class PilgrimController : MonoBehaviour
     /// </summary>
     private void OnJump()
     {
-        if (!isCrouched && !isJumping && Physics.Raycast(transform.position, Vector3.down, jumpRaycastDistance))
+        if (!isCrouched && !isJumping && Physics.Raycast(transform.position, Vector3.down, findFloorRaycastDist))
         {
             isJumping = true;
             timeSinceJump = 0f;
@@ -188,6 +200,8 @@ public class PilgrimController : MonoBehaviour
                 transform.Translate(new Vector3(0f, -(CrouchHeight / 2), 0f));
                 break;
             case false:
+                // Translate pilgrim upwards to negate occasional bouncing caused by funky physics.
+                transform.Translate(new Vector3(0f, (CrouchHeight / 2), 0f));
                 VisualComponentTransform.localScale = new Vector3(VisualComponentTransform.localScale.x, VisualComponentTransform.localScale.y / CrouchHeight, VisualComponentTransform.localScale.z);
                 ColliderTransform.localScale = new Vector3(ColliderTransform.localScale.x, ColliderTransform.localScale.y / CrouchHeight, ColliderTransform.localScale.z);
                 break;
