@@ -28,5 +28,31 @@ public class GraphicsUI : MonoBehaviour
         QualityDropdown.value = optionsAndSettings.GetQualityLevel();
 
         FullScreenToggle.isOn = optionsAndSettings.GetFullScreen();
+
+
+        ResolutionDropdown.onValueChanged.AddListener(OnResolutionChange);
+        QualityDropdown.onValueChanged.AddListener(OnQualityChange);
+        FullScreenToggle.onValueChanged.AddListener(OnFullScreenChange);
     }
+
+    public void BackAndSave()
+    {
+        optionsAndSettings.SaveSettings();
+    }
+
+    private void OnResolutionChange(int _newIndex)
+    {
+        optionsAndSettings.SetResolutionIndex(_newIndex);
+    }
+
+    private void OnQualityChange(int _newIndex)
+    {
+        optionsAndSettings.SetQualityLevel(_newIndex);
+    }
+ 
+    private void OnFullScreenChange(bool _newState)
+    {
+        optionsAndSettings.SetFullScreen(_newState);
+    }
+
 }
