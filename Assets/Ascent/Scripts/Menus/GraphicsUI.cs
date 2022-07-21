@@ -38,6 +38,7 @@ public class GraphicsUI : MonoBehaviour
     public void BackAndSave()
     {
         optionsAndSettings.SaveSettings();
+        this.gameObject.SetActive(false);
     }
 
 }

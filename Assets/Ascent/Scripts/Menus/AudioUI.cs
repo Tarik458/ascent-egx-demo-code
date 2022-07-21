@@ -23,5 +23,15 @@ public class AudioUI : MonoBehaviour
         MainVolumeSlider.value = optionsAndSettings.GetMainVolume();
         MusicVolumeSlider.value = optionsAndSettings.GetMusicVolume();
         SpeechVolumeSlider.value = optionsAndSettings.GetSpeechVolume();
+
+        MainVolumeSlider.onValueChanged.AddListener(optionsAndSettings.SetMainVolume);
+        MusicVolumeSlider.onValueChanged.AddListener(optionsAndSettings.SetMusicVolume);
+        SpeechVolumeSlider.onValueChanged.AddListener(optionsAndSettings.SetSpeechVolume);
+    }
+
+    public void BackAndSave()
+    {
+        optionsAndSettings.SaveSettings();
+        this.gameObject.SetActive(false);
     }
 }
