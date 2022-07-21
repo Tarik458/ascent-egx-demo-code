@@ -29,9 +29,8 @@ public class AudioUI : MonoBehaviour
         SpeechVolumeSlider.onValueChanged.AddListener(optionsAndSettings.SetSpeechVolume);
     }
 
-    public void BackAndSave()
+    private void OnDisable()
     {
         optionsAndSettings.SaveSettings();
-        this.gameObject.SetActive(false);
     }
 }

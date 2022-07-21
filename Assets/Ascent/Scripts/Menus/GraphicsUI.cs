@@ -35,10 +35,9 @@ public class GraphicsUI : MonoBehaviour
         FullScreenToggle.onValueChanged.AddListener(optionsAndSettings.SetFullScreen);
     }
 
-    public void BackAndSave()
+    private void OnDisable()
     {
         optionsAndSettings.SaveSettings();
-        this.gameObject.SetActive(false);
     }
 
 }
