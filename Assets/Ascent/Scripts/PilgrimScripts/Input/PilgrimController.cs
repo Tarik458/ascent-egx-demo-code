@@ -53,6 +53,10 @@ public class PilgrimController : MonoBehaviour
     private bool inFireZone = false;
     private GameObject fireZoneObj;
 
+    private bool inBeeZone = false;
+    private bool beesFollowing = false;
+    private GameObject beeZoneObj;
+
     private bool isJumping = false;
     // Distance to raycast downwards from pilgrim for groundcheck, should be half height + small margin.
     private float findFloorRaycastDist;
@@ -179,7 +183,16 @@ public class PilgrimController : MonoBehaviour
         {
             fireZoneObj.GetComponent<FireFlicker>().LightFire();
         }
-
+        if(inBeeZone && !beesFollowing)
+        {
+            beeZoneObj.GetComponent<Beeeeez>().SetTarget(this.gameObject.transform);
+            beesFollowing = true;
+        }
+        else if (beesFollowing)
+        {
+            beeZoneObj.GetComponent<Beeeeez>().StopFollowing();
+            beesFollowing = false;
+        }
     }
 
 
@@ -251,6 +264,10 @@ public class PilgrimController : MonoBehaviour
                 inFireZone = true;
                 fireZoneObj = _other.gameObject;
                 break;
+            case "BeeSwarm":
+                inBeeZone = true;
+                beeZoneObj = _other.gameObject;
+                break;
             case "CamAdjustZone":
                 OnCamAdjust(_other.gameObject.GetComponentInParent<CamAdjustVals>());
                 break;
@@ -270,6 +287,9 @@ public class PilgrimController : MonoBehaviour
             case "FireZone":
                 OnCrouch(false);
                 inFireZone = false;
+                break;
+            case "BeeSwarm":
+                inBeeZone = false;
                 break;
             default:
                 break;
