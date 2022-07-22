@@ -44,18 +44,14 @@ public class PilgrimController : MonoBehaviour
     private float RotateSpeed = 360f;
 
 
+    [SerializeField]
+    [Tooltip("The other script also attached to pilgrim, helps keep this script clean.")]
+    private TriggerZoneInfo triggerZoneInfo;
+
     private Vector3 moveDirection;
     private float camFacingDirection;
 
-
     private bool isCrouched = false;
-
-    private bool inFireZone = false;
-    private GameObject fireZoneObj;
-
-    private bool inBeeZone = false;
-    private bool beesFollowing = false;
-    private GameObject beeZoneObj;
 
     private bool isJumping = false;
     // Distance to raycast downwards from pilgrim for groundcheck, should be half height + small margin.
@@ -179,20 +175,7 @@ public class PilgrimController : MonoBehaviour
     /// </summary>
     private void OnInteractPressed()
     {
-        if (inFireZone)
-        {
-            fireZoneObj.GetComponent<FireFlicker>().LightFire();
-        }
-        if(inBeeZone && !beesFollowing)
-        {
-            beeZoneObj.GetComponent<Beeeeez>().SetTarget(this.gameObject.transform);
-            beesFollowing = true;
-        }
-        else if (beesFollowing)
-        {
-            beeZoneObj.GetComponent<Beeeeez>().StopFollowing();
-            beesFollowing = false;
-        }
+        triggerZoneInfo.TestInterations();
     }
 
 
@@ -252,24 +235,22 @@ public class PilgrimController : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider _other)
+    private void OnTriggerEnter(Collider _collider)
     {
-        switch(_other.gameObject.tag)
+        switch(_collider.gameObject.tag)
         {
             case "CrouchZone":
                 OnCrouch(true);
                 break;
             case "FireZone":
                 OnCrouch(true);
-                inFireZone = true;
-                fireZoneObj = _other.gameObject;
+                triggerZoneInfo.EnterFireZone(_collider.gameObject);
                 break;
             case "BeeSwarm":
-                inBeeZone = true;
-                beeZoneObj = _other.gameObject;
+                triggerZoneInfo.EnterBeeZone(_collider.gameObject);
                 break;
             case "CamAdjustZone":
-                OnCamAdjust(_other.gameObject.GetComponentInParent<CamAdjustVals>());
+                OnCamAdjust(_collider.gameObject.GetComponentInParent<CamAdjustVals>());
                 break;
             default:
                 break;
@@ -277,19 +258,19 @@ public class PilgrimController : MonoBehaviour
     }
 
 
-    private void OnTriggerExit(Collider _other)
+    private void OnTriggerExit(Collider _collider)
     {
-        switch (_other.gameObject.tag)
+        switch (_collider.gameObject.tag)
         {
             case "CrouchZone":
                 OnCrouch(false);
                 break;
             case "FireZone":
                 OnCrouch(false);
-                inFireZone = false;
+                triggerZoneInfo.inFireZone = false;
                 break;
             case "BeeSwarm":
-                inBeeZone = false;
+                triggerZoneInfo.inBeeZone = false;
                 break;
             default:
                 break;
