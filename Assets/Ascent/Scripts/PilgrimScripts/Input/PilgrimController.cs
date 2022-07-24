@@ -48,6 +48,11 @@ public class PilgrimController : MonoBehaviour
     [Tooltip("The other script also attached to pilgrim, helps keep this script clean.")]
     private TriggerZoneInfo triggerZoneInfo;
 
+    [SerializeField]
+    [Tooltip("Temporary script for controlling Mixamo anims.")]
+    private MixamoController mixamoController;
+
+
     private Vector3 moveDirection;
     private float camFacingDirection;
 
@@ -115,6 +120,7 @@ public class PilgrimController : MonoBehaviour
         if (moveDirection == Vector3.zero || Physics.Raycast(wallCastPos, camRelativeMoveDir, findWallRaycastDist))
         {
             MainRB.velocity = new Vector3(0f, MainRB.velocity.y, 0f);
+            mixamoController.StopWalking();
         }
         else
         {
@@ -124,6 +130,7 @@ public class PilgrimController : MonoBehaviour
             }
             else
             {
+                mixamoController.StartWalking();
                 MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
             }
         }
@@ -165,6 +172,7 @@ public class PilgrimController : MonoBehaviour
         if (!isCrouched && !isJumping && Physics.Raycast(transform.position, Vector3.down, findFloorRaycastDist))
         {
             isJumping = true;
+            mixamoController.Jump();
             timeSinceJump = 0f;
             MainRB.AddForce(Vector3.up * JumpPower, ForceMode.Impulse);
         }
