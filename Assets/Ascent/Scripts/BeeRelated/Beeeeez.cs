@@ -6,11 +6,22 @@ public class Beeeeez : MonoBehaviour
 {
     private Transform Target;
 
+    private Vector3 idleTargetPos;
+
     private Vector3 beeOffset;
 
     private float followSpeed = 0.05f;
 
     private bool isFollowing = false;
+    private bool isScared = false;
+
+    private SwarmLocationData swarmLocationData;
+
+    private void Start()
+    {
+        idleTargetPos = transform.position;
+        swarmLocationData = GetComponentInParent<SwarmLocationData>();
+    }
 
     private void SetOffset()
     {
@@ -25,18 +36,42 @@ public class Beeeeez : MonoBehaviour
             Vector3 beeDesiredPos = Target.position + beeOffset;
             transform.position = Vector3.Lerp(transform.position, beeDesiredPos, followSpeed);
         }
+        else if(isScared)
+        { 
+            // TODO:
+            // needs some work, constant speed and when reach target set isScare = false
+            transform.position = Vector3.Lerp(transform.position, idleTargetPos, followSpeed);
+        }
     }
 
-
+    /// <summary>
+    /// Sets the pilgrim as the target to follow and sets the swarm location to unoccupied.
+    /// </summary>
+    /// <param name="_target"></param>
     public void SetTarget(Transform _target)
     {
+        isScared = false;
         Target = _target;
         SetOffset();
         isFollowing = true;
+        swarmLocationData.SetLocationState(idleTargetPos, false);
     }
 
+    /// <summary>
+    /// If user decides to leave bees where they are.
+    /// </summary>
     public void StopFollowing()
     {
         isFollowing = false;
+    }
+
+    /// <summary>
+    /// If bees are scared by environment, returns them to an idling positon.
+    /// </summary>
+    public void ScaredStopFollowing()
+    {
+        isFollowing = false;
+        idleTargetPos = swarmLocationData.GetEmptyLocationAndSetOccupied();
+        isScared = true;
     }
 }
