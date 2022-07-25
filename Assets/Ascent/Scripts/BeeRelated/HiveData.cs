@@ -32,18 +32,14 @@ public class HiveData : MonoBehaviour
     /// Returns true if swarm number matches for the bees and the hive.
     /// </summary>
     /// <param name="_swarmNumber"></param>
-    /// <returns></returns>
-    public bool BeesEnter(Beeeeez _beeeeez)
+    public void BeesEnter(Beeeeez _beeeeez)
     {
         if (SwarmNumber == _beeeeez.GetSwarmNumber())
         {
             hasBees = true;
             beeeeez = _beeeeez;
             CheckCompleted();
-            return true;
         }
-        else return false;
-
     }
 
 
@@ -56,6 +52,7 @@ public class HiveData : MonoBehaviour
             {
                 mat.SetColor("_Color", Color.yellow);
             }
+            beeeeez.EnterHive(transform.position);
         }
         else StartCoroutine(EjectBeesTimer());
 

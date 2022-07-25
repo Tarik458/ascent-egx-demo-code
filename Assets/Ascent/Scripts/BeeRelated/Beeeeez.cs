@@ -61,6 +61,28 @@ public class Beeeeez : MonoBehaviour
         swarmLocationData.SetLocationState(idleTargetPos, false);
     }
 
+    public void EnterHive(Vector3 _hivePos)
+    {
+        isFollowing = false;
+        StartCoroutine(TranslateToHive(_hivePos));
+    }
+    private IEnumerator TranslateToHive(Vector3 _desiredPos)
+    {
+        Vector3 startPos = transform.position;
+        float timeToLerp = 1.5f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime <= timeToLerp)
+        {
+            transform.position = Vector3.Lerp(startPos, _desiredPos, elapsedTime/timeToLerp);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+
+
+
     /// <summary>
     /// If user decides to leave bees where they are.
     /// </summary>

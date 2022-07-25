@@ -243,23 +243,35 @@ public class PilgrimController : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider _collider)
+    private void OnTriggerEnter(Collider _trigger)
     {
-        switch(_collider.gameObject.tag)
+        switch(_trigger.gameObject.tag)
         {
             case "CrouchZone":
                 OnCrouch(true);
                 break;
             case "FireZone":
-                triggerZoneInfo.EnterFireZone(_collider.gameObject);
+                triggerZoneInfo.EnterFireZone(_trigger.gameObject);
                 mixamoController.EnterInteractionZone();
                 break;
             case "BeeSwarm":
-                triggerZoneInfo.EnterBeeZone(_collider.gameObject);
+                triggerZoneInfo.EnterBeeZone(_trigger.gameObject);
                 mixamoController.EnterInteractionZone();
                 break;
+            case "HiveZone":
+                if (triggerZoneInfo.EnterHiveZone(_trigger.gameObject))
+                {
+                    mixamoController.EnterInteractionZone();
+                }
+                break;
+            case "GhostBeesZone":
+                if (triggerZoneInfo.beesFollowing)
+                {
+                    triggerZoneInfo.ScareBees();
+                }
+                break;
             case "CamAdjustZone":
-                OnCamAdjust(_collider.gameObject.GetComponentInParent<CamAdjustVals>());
+                OnCamAdjust(_trigger.gameObject.GetComponentInParent<CamAdjustVals>());
                 break;
             default:
                 break;
@@ -267,9 +279,9 @@ public class PilgrimController : MonoBehaviour
     }
 
 
-    private void OnTriggerExit(Collider _collider)
+    private void OnTriggerExit(Collider _trigger)
     {
-        switch (_collider.gameObject.tag)
+        switch (_trigger.gameObject.tag)
         {
             case "CrouchZone":
                 OnCrouch(false);
@@ -280,6 +292,10 @@ public class PilgrimController : MonoBehaviour
                 break;
             case "BeeSwarm":
                 triggerZoneInfo.inBeeZone = false;
+                mixamoController.ExitInteractionZone();
+                break;
+            case "HiveZone":
+                triggerZoneInfo.inHiveZone = false;
                 mixamoController.ExitInteractionZone();
                 break;
             default:
