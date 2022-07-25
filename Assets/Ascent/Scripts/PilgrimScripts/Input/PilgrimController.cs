@@ -259,7 +259,7 @@ public class PilgrimController : MonoBehaviour
                 mixamoController.EnterInteractionZone();
                 break;
             case "HiveZone":
-                if (triggerZoneInfo.EnterHiveZone(_trigger.gameObject))
+                if (!triggerZoneInfo.EnterHiveZone(_trigger.gameObject))
                 {
                     mixamoController.EnterInteractionZone();
                 }

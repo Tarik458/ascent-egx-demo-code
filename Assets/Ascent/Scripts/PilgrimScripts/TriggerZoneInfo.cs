@@ -74,6 +74,8 @@ public class TriggerZoneInfo : MonoBehaviour
 
     public bool EnterHiveZone(GameObject _objectRef)
     {
+        inHiveZone = true;
+        hiveZoneObj = _objectRef;
         if (beesFollowing)
         {
             _objectRef.GetComponent<HiveData>().BeesEnter(beeeeez);

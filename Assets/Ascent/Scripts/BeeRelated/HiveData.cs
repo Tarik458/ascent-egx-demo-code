@@ -9,7 +9,9 @@ public class HiveData : MonoBehaviour
     [SerializeField]
     private float SwarmEjectWaitTime = 20f;
     [SerializeField]
-    private List<Material> PipeFromHiveMaterial;
+    private List<GameObject> PipeFromHive;
+    [SerializeField]
+    private Material FilledPipeMat;
 
     private bool hasBees = false;
 
@@ -48,9 +50,9 @@ public class HiveData : MonoBehaviour
         if (hasBees && hasRibbon)
         {
             completed = true;
-            foreach (Material mat in PipeFromHiveMaterial)
+            foreach (GameObject pipe in PipeFromHive)
             {
-                mat.SetColor("_Color", Color.yellow);
+                pipe.GetComponent<MeshRenderer>().material = FilledPipeMat;
             }
             beeeeez.EnterHive(transform.position);
         }
