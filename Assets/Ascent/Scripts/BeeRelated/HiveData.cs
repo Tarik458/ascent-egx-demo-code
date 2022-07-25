@@ -4,15 +4,73 @@ using UnityEngine;
 
 public class HiveData : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private int SwarmNumber;
+    [SerializeField]
+    private float SwarmEjectWaitTime = 20f;
+    [SerializeField]
+    private List<Material> PipeFromHiveMaterial;
+
+    private bool hasBees = false;
+
+    private bool hasRibbon = false;
+
+    private bool completed = false;
+
+    private Beeeeez beeeeez;
+
+    public bool GetRibbonState()
     {
-        
+        return hasRibbon;
+    }
+    public void ApplyRibbon()
+    {
+        hasRibbon = true;
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Returns true if swarm number matches for the bees and the hive.
+    /// </summary>
+    /// <param name="_swarmNumber"></param>
+    /// <returns></returns>
+    public bool BeesEnter(Beeeeez _beeeeez)
     {
-        
+        if (SwarmNumber == _beeeeez.GetSwarmNumber())
+        {
+            hasBees = true;
+            beeeeez = _beeeeez;
+            CheckCompleted();
+            return true;
+        }
+        else return false;
+
     }
+
+
+    private void CheckCompleted()
+    {
+        if (hasBees && hasRibbon)
+        {
+            completed = true;
+            foreach (Material mat in PipeFromHiveMaterial)
+            {
+                mat.SetColor("_Color", Color.yellow);
+            }
+        }
+        else StartCoroutine(EjectBeesTimer());
+
+    }
+
+    private IEnumerator EjectBeesTimer()
+    {
+        yield return new WaitForSeconds(SwarmEjectWaitTime);
+        EjectBees();
+    }
+
+    private void EjectBees()
+    {
+        beeeeez.ScaredStopFollowing();
+    }
+
+
 }

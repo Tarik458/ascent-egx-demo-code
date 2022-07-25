@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Beeeeez : MonoBehaviour
 {
+    [SerializeField]
+    private int SwarmNumber;
+
     private Transform Target;
 
     private Vector3 idleTargetPos;
@@ -23,10 +26,6 @@ public class Beeeeez : MonoBehaviour
         swarmLocationData = GetComponentInParent<SwarmLocationData>();
     }
 
-    private void SetOffset()
-    {
-        beeOffset = transform.position - Target.position;
-    }
 
     // Update is called once per frame
     private void FixedUpdate()
@@ -42,6 +41,11 @@ public class Beeeeez : MonoBehaviour
             // needs some work, constant speed and when reach target set isScare = false
             transform.position = Vector3.Lerp(transform.position, idleTargetPos, followSpeed);
         }
+    }
+
+    public int GetSwarmNumber()
+    {
+        return SwarmNumber;
     }
 
     /// <summary>
@@ -73,5 +77,12 @@ public class Beeeeez : MonoBehaviour
         isFollowing = false;
         idleTargetPos = swarmLocationData.GetEmptyLocationAndSetOccupied();
         isScared = true;
+    }
+
+
+
+    private void SetOffset()
+    {
+        beeOffset = transform.position - Target.position;
     }
 }
