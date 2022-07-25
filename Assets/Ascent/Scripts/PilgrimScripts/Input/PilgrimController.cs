@@ -183,7 +183,7 @@ public class PilgrimController : MonoBehaviour
     /// </summary>
     private void OnInteractPressed()
     {
-        triggerZoneInfo.TestInterations();
+        triggerZoneInfo.TestInterations(mixamoController);
     }
 
 
@@ -251,11 +251,12 @@ public class PilgrimController : MonoBehaviour
                 OnCrouch(true);
                 break;
             case "FireZone":
-                OnCrouch(true);
                 triggerZoneInfo.EnterFireZone(_collider.gameObject);
+                mixamoController.EnterInteractionZone();
                 break;
             case "BeeSwarm":
                 triggerZoneInfo.EnterBeeZone(_collider.gameObject);
+                mixamoController.EnterInteractionZone();
                 break;
             case "CamAdjustZone":
                 OnCamAdjust(_collider.gameObject.GetComponentInParent<CamAdjustVals>());
@@ -274,11 +275,12 @@ public class PilgrimController : MonoBehaviour
                 OnCrouch(false);
                 break;
             case "FireZone":
-                OnCrouch(false);
                 triggerZoneInfo.inFireZone = false;
+                mixamoController.ExitInteractionZone();
                 break;
             case "BeeSwarm":
                 triggerZoneInfo.inBeeZone = false;
+                mixamoController.ExitInteractionZone();
                 break;
             default:
                 break;

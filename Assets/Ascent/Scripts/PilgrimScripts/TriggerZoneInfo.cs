@@ -20,11 +20,15 @@ public class TriggerZoneInfo : MonoBehaviour
     public GameObject beeZoneObj;
 
      
-    public void TestInterations()
+    public void TestInterations(MixamoController _mixamo)
     {
         if (inFireZone)
         {
-            fireZoneObj.GetComponent<FireFlicker>().LightFire();
+            if (fireZoneObj.GetComponent<FireFlicker>().GetLitState() == false)
+            {
+                fireZoneObj.GetComponent<FireFlicker>().LightFire();
+                _mixamo.LightFire();
+            }
         }
         if (inBeeZone && !beesFollowing)
         {
