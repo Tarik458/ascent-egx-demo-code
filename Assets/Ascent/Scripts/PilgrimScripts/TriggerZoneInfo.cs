@@ -18,8 +18,13 @@ public class TriggerZoneInfo : MonoBehaviour
     public bool beesFollowing = false;
     [HideInInspector]
     public GameObject beeZoneObj;
+    private Beeeeez beeeeez;
 
-     
+    [HideInInspector]
+    public bool inHiveZone = false;
+    [HideInInspector]
+    public GameObject hiveZoneObj;
+
     public void TestInterations(MixamoController _mixamo)
     {
         if (inFireZone)
@@ -30,15 +35,21 @@ public class TriggerZoneInfo : MonoBehaviour
                 _mixamo.LightFire();
             }
         }
+
         if (inBeeZone && !beesFollowing)
         {
-            beeZoneObj.GetComponent<Beeeeez>().SetTarget(this.gameObject.transform);
+            beeeeez.SetTarget(this.gameObject.transform);
             beesFollowing = true;
         }
         else if (beesFollowing)
         {
-            beeZoneObj.GetComponent<Beeeeez>().StopFollowing();
+            beeeeez.StopFollowing();
             beesFollowing = false;
+        }
+
+        if (inHiveZone)
+        {
+            hiveZoneObj.GetComponent<HiveData>().ApplyRibbon();
         }
     }
 
@@ -52,6 +63,26 @@ public class TriggerZoneInfo : MonoBehaviour
     {
         inBeeZone = true;
         beeZoneObj = _objectRef;
+        beeeeez = beeZoneObj.GetComponent<Beeeeez>();
+    }
+
+    public void ScareBees()
+    {
+        beesFollowing = false;
+        beeeeez.ScaredStopFollowing();
+    }
+
+    public bool EnterHiveZone(GameObject _objectRef)
+    {
+        inHiveZone = true;
+        hiveZoneObj = _objectRef;
+        if (beesFollowing)
+        {
+            _objectRef.GetComponent<HiveData>().BeesEnter(beeeeez);
+            beesFollowing = false;
+        }
+
+        return _objectRef.GetComponent<HiveData>().GetRibbonState();
     }
 
 }
