@@ -13,6 +13,9 @@ public class HiveData : MonoBehaviour
     [SerializeField]
     private Material FilledPipeMat;
 
+    [SerializeField]
+    private GameObject BlackRibbon;
+
     private bool hasBees = false;
 
     private bool hasRibbon = false;
@@ -21,6 +24,11 @@ public class HiveData : MonoBehaviour
 
     private Beeeeez beeeeez;
 
+    public bool GetCompletedState()
+    {
+        return completed;
+    }
+
     public bool GetRibbonState()
     {
         return hasRibbon;
@@ -28,6 +36,7 @@ public class HiveData : MonoBehaviour
     public void ApplyRibbon()
     {
         hasRibbon = true;
+        BlackRibbon.SetActive(true);
     }
 
     /// <summary>
