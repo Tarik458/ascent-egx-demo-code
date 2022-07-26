@@ -44,18 +44,19 @@ public class PilgrimController : MonoBehaviour
     private float RotateSpeed = 360f;
 
 
+    [SerializeField]
+    [Tooltip("The other script also attached to pilgrim, helps keep this script clean.")]
+    private TriggerZoneInfo triggerZoneInfo;
+
+    [SerializeField]
+    [Tooltip("Temporary script for controlling Mixamo anims.")]
+    private MixamoController mixamoController;
+
+
     private Vector3 moveDirection;
     private float camFacingDirection;
 
-
     private bool isCrouched = false;
-
-    private bool inFireZone = false;
-    private GameObject fireZoneObj;
-
-    private bool inBeeZone = false;
-    private bool beesFollowing = false;
-    private GameObject beeZoneObj;
 
     private bool isJumping = false;
     // Distance to raycast downwards from pilgrim for groundcheck, should be half height + small margin.
@@ -119,6 +120,7 @@ public class PilgrimController : MonoBehaviour
         if (moveDirection == Vector3.zero || Physics.Raycast(wallCastPos, camRelativeMoveDir, findWallRaycastDist))
         {
             MainRB.velocity = new Vector3(0f, MainRB.velocity.y, 0f);
+            mixamoController.StopWalking();
         }
         else
         {
@@ -128,6 +130,7 @@ public class PilgrimController : MonoBehaviour
             }
             else
             {
+                mixamoController.StartWalking();
                 MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
             }
         }
@@ -169,6 +172,7 @@ public class PilgrimController : MonoBehaviour
         if (!isCrouched && !isJumping && Physics.Raycast(transform.position, Vector3.down, findFloorRaycastDist))
         {
             isJumping = true;
+            mixamoController.Jump();
             timeSinceJump = 0f;
             MainRB.AddForce(Vector3.up * JumpPower, ForceMode.Impulse);
         }
@@ -179,20 +183,7 @@ public class PilgrimController : MonoBehaviour
     /// </summary>
     private void OnInteractPressed()
     {
-        if (inFireZone)
-        {
-            fireZoneObj.GetComponent<FireFlicker>().LightFire();
-        }
-        if(inBeeZone && !beesFollowing)
-        {
-            beeZoneObj.GetComponent<Beeeeez>().SetTarget(this.gameObject.transform);
-            beesFollowing = true;
-        }
-        else if (beesFollowing)
-        {
-            beeZoneObj.GetComponent<Beeeeez>().StopFollowing();
-            beesFollowing = false;
-        }
+        triggerZoneInfo.TestInterations(mixamoController);
     }
 
 
@@ -252,24 +243,35 @@ public class PilgrimController : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider _other)
+    private void OnTriggerEnter(Collider _trigger)
     {
-        switch(_other.gameObject.tag)
+        switch(_trigger.gameObject.tag)
         {
             case "CrouchZone":
                 OnCrouch(true);
                 break;
             case "FireZone":
-                OnCrouch(true);
-                inFireZone = true;
-                fireZoneObj = _other.gameObject;
+                triggerZoneInfo.EnterFireZone(_trigger.gameObject);
+                mixamoController.EnterInteractionZone();
                 break;
             case "BeeSwarm":
-                inBeeZone = true;
-                beeZoneObj = _other.gameObject;
+                triggerZoneInfo.EnterBeeZone(_trigger.gameObject);
+                mixamoController.EnterInteractionZone();
+                break;
+            case "HiveZone":
+                if (!triggerZoneInfo.EnterHiveZone(_trigger.gameObject))
+                {
+                    mixamoController.EnterInteractionZone();
+                }
+                break;
+            case "GhostBeesZone":
+                if (triggerZoneInfo.beesFollowing)
+                {
+                    triggerZoneInfo.ScareBees();
+                }
                 break;
             case "CamAdjustZone":
-                OnCamAdjust(_other.gameObject.GetComponentInParent<CamAdjustVals>());
+                OnCamAdjust(_trigger.gameObject.GetComponentInParent<CamAdjustVals>());
                 break;
             default:
                 break;
@@ -277,19 +279,24 @@ public class PilgrimController : MonoBehaviour
     }
 
 
-    private void OnTriggerExit(Collider _other)
+    private void OnTriggerExit(Collider _trigger)
     {
-        switch (_other.gameObject.tag)
+        switch (_trigger.gameObject.tag)
         {
             case "CrouchZone":
                 OnCrouch(false);
                 break;
             case "FireZone":
-                OnCrouch(false);
-                inFireZone = false;
+                triggerZoneInfo.inFireZone = false;
+                mixamoController.ExitInteractionZone();
                 break;
             case "BeeSwarm":
-                inBeeZone = false;
+                triggerZoneInfo.inBeeZone = false;
+                mixamoController.ExitInteractionZone();
+                break;
+            case "HiveZone":
+                triggerZoneInfo.inHiveZone = false;
+                mixamoController.ExitInteractionZone();
                 break;
             default:
                 break;

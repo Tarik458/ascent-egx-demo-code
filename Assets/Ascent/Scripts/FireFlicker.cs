@@ -36,15 +36,17 @@ public class FireFlicker : MonoBehaviour
 
     private bool isFlickering;
 
+    public bool GetLitState()
+    {
+        return IsLit;
+    }
+
     public void LightFire()
     {
-        if (!IsLit)
-        {
-            IsLit = true;
-            Light(IsLit);
-            StartCoroutine(Ignition());
-            audioSource.PlayOneShot(lightUpFire);
-        }
+        IsLit = true;
+        Light(IsLit);
+        StartCoroutine(Ignition());
+        audioSource.PlayOneShot(lightUpFire);
     }
 
     private void Start()
