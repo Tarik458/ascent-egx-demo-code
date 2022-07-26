@@ -13,6 +13,9 @@ public class HiveData : MonoBehaviour
     [SerializeField]
     private Material FilledPipeMat;
 
+    [SerializeField]
+    private GameObject BlackRibbon;
+
     private bool hasBees = false;
 
     private bool hasRibbon = false;
@@ -21,6 +24,11 @@ public class HiveData : MonoBehaviour
 
     private Beeeeez beeeeez;
 
+    public bool GetCompletedState()
+    {
+        return completed;
+    }
+
     public bool GetRibbonState()
     {
         return hasRibbon;
@@ -28,20 +36,24 @@ public class HiveData : MonoBehaviour
     public void ApplyRibbon()
     {
         hasRibbon = true;
+        BlackRibbon.SetActive(true);
     }
 
     /// <summary>
     /// Returns true if swarm number matches for the bees and the hive.
     /// </summary>
     /// <param name="_swarmNumber"></param>
-    public void BeesEnter(Beeeeez _beeeeez)
+    public bool BeesEnter(Beeeeez _beeeeez)
     {
         if (SwarmNumber == _beeeeez.GetSwarmNumber())
         {
             hasBees = true;
             beeeeez = _beeeeez;
+            beeeeez.EnterHive(transform.position);
             CheckCompleted();
+            return true;
         }
+        else return false;
     }
 
 
@@ -54,7 +66,6 @@ public class HiveData : MonoBehaviour
             {
                 pipe.GetComponent<MeshRenderer>().material = FilledPipeMat;
             }
-            beeeeez.EnterHive(transform.position);
         }
         else StartCoroutine(EjectBeesTimer());
 
