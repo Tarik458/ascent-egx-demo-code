@@ -88,4 +88,9 @@ public class TriggerZoneInfo : MonoBehaviour
         return _objectRef.GetComponent<HiveData>().GetRibbonState();
     }
 
+
+    public void EndGame(GameObject _objectRef)
+    {
+        _objectRef.GetComponent<ShowEndscreen>().ShowCanvas();
+    }
 }
