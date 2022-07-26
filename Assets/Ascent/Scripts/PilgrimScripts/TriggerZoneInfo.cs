@@ -45,6 +45,7 @@ public class TriggerZoneInfo : MonoBehaviour
         {
             beeeeez.StopFollowing();
             beesFollowing = false;
+            Debug.Log("bees stop following");
         }
 
         if (inHiveZone)
@@ -78,8 +79,10 @@ public class TriggerZoneInfo : MonoBehaviour
         hiveZoneObj = _objectRef;
         if (beesFollowing)
         {
-            _objectRef.GetComponent<HiveData>().BeesEnter(beeeeez);
-            beesFollowing = false;
+            if (_objectRef.GetComponent<HiveData>().BeesEnter(beeeeez))
+            {
+                beesFollowing = false;
+            }
         }
 
         return _objectRef.GetComponent<HiveData>().GetRibbonState();
