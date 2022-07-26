@@ -270,6 +270,9 @@ public class PilgrimController : MonoBehaviour
                     triggerZoneInfo.ScareBees();
                 }
                 break;
+            case "EndGameZone":
+                triggerZoneInfo.EndGame(_trigger.gameObject);
+                break;
             case "CamAdjustZone":
                 OnCamAdjust(_trigger.gameObject.GetComponentInParent<CamAdjustVals>());
                 break;

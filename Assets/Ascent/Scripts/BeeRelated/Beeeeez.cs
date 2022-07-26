@@ -39,7 +39,7 @@ public class Beeeeez : MonoBehaviour
         { 
             // TODO:
             // needs some work, constant speed and when reach target set isScare = false
-            transform.position = Vector3.Lerp(transform.position, idleTargetPos, followSpeed);
+            transform.position = Vector3.Lerp(transform.position, idleTargetPos, followSpeed * Time.deltaTime * 5);
         }
     }
 
