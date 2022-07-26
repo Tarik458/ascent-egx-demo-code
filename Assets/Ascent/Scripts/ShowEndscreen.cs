@@ -8,10 +8,13 @@ public class ShowEndscreen : MonoBehaviour
     [SerializeField]
     private GameObject EndScreenCanvas;
 
+    [SerializeField]
+    AudioSource audioSource;
 
     public void ShowCanvas()
     {
         EndScreenCanvas.SetActive(true);
+        audioSource.Play();
     }
 
     public void QuitToMenu()
