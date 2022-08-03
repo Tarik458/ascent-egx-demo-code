@@ -8,13 +8,11 @@ public class BrightenArea : MonoBehaviour
     private List<FireFlicker> AreaFires;
 
     [SerializeField]
-    private Light AreaLight;
+    private List<Light> AreaLights;
 
     [SerializeField]
     private float MaxIntensity;
 
-
-    private float startIntensity = 0f;
     private float currentIntensity;
 
     private float intensityStep;
@@ -23,16 +21,18 @@ public class BrightenArea : MonoBehaviour
 
     private void Start()
     {
-        currentIntensity = startIntensity;
-
         intensityStep = MaxIntensity / AreaFires.Count;
 
         StartCoroutine(CheckFiresLitState());
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        
+        currentIntensity = Mathf.Lerp(currentIntensity, intensityStep * litFires, 0.01f);
+        foreach (Light light in AreaLights)
+        {
+            light.intensity = currentIntensity;
+        }
     }
 
     private IEnumerator CheckFiresLitState()
