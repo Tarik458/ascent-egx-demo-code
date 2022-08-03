@@ -45,6 +45,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 9236635f319ab034fa33215e8eaa903a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Toon_Ramp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -65,11 +69,16 @@ Material:
     - _Falloff_Amount: 0.05
     - _FresnelSize: 0.1
     - _Fresnel_Size: 0.2
+    - _Fresnel__Contrast: 10
     - _LightingCutoff: 0
     - _Lighting_Cutoff: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 3000
+    - _Toon_Ramp_Amount: 1
+    - _Toon_Ramp_Contrast: 1
+    - _Toon_Ramp_Power: 1
+    - _Using_Texture: 0
     m_Colors:
     - _DiffuseColor: {r: 0.8679245, g: 0.72463506, b: 0.72463506, a: 1}
     - _Diffuse_Colour: {r: 1, g: 1, b: 1, a: 1}
