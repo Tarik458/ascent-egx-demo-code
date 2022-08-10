@@ -31,7 +31,9 @@ public class PilgrimFollowCam : MonoBehaviour
     /// </summary>
     private Vector3 camOffset;
     private Vector3 baseCamOffset;
+    private Quaternion currentCamRotation;
     private Vector3 previousCamRotation;
+    private Vector3 camTwist = Vector3.zero;
 
     private bool offsetIsBusy = false;
     private bool rotIsBusy = false;
@@ -54,6 +56,7 @@ public class PilgrimFollowCam : MonoBehaviour
         baseCamOffset = transform.position - Target.position;
         camOffset = baseCamOffset;
         previousCamRotation = transform.eulerAngles;
+        currentCamRotation = transform.rotation;
     }
 
     private void FixedUpdate()
@@ -61,11 +64,50 @@ public class PilgrimFollowCam : MonoBehaviour
         // Using FixedUpdate and no time.deltatime solved camera jitter issue.
         Vector3 camDesiredPos = Target.position + camOffset;
         transform.position = Vector3.Lerp(transform.position, camDesiredPos, FollowSpeed);
+
+
+        // Twist cam to face direction of travel.
+        Quaternion targetTwist = new Quaternion(currentCamRotation.x + Quaternion.Euler(camTwist).x, currentCamRotation.y + Quaternion.Euler(camTwist).y, currentCamRotation.z, currentCamRotation.w);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetTwist, 0.05f);
     }
+
+    public void CamTwistDirection(Vector3 _moveDirection, bool stopped = false)
+    {
+        if (stopped)
+        {
+            camTwist.x = 0;
+            camTwist.y = 0;
+        }
+
+        // twist cam right or left
+        if (_moveDirection.x > 0)
+        {
+            camTwist.x = 0;
+            camTwist.y = 25;
+        }
+        else if (_moveDirection.x < 0)
+        {
+            camTwist.x = 0;
+            camTwist.y = -25;
+        }
+        // twist cam down
+        if (_moveDirection.z <0)
+        {
+            camTwist.y = 0;
+            camTwist.x = 20;
+        }
+    }
+
+
 
     public Vector3 GetPrevCamRot()
     {
         return previousCamRotation;
+    }
+
+    public Quaternion GetCurrentCamRot()
+    {
+        return currentCamRotation;
     }
 
     /// <summary>
@@ -156,7 +198,8 @@ public class PilgrimFollowCam : MonoBehaviour
 
         while (elapsedTime <= _lerpDuration)
         {
-            transform.rotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / _lerpDuration);
+            currentCamRotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / _lerpDuration);
+            transform.rotation = currentCamRotation;
             elapsedTime += Time.deltaTime;
             yield return null;
             transform.rotation = endRotation;

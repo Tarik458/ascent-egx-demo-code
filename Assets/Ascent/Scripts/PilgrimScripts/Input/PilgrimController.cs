@@ -110,7 +110,7 @@ public class PilgrimController : MonoBehaviour
 
     private void Update()
     {
-        camFacingDirection = FollowCam.transform.eulerAngles.y;
+        camFacingDirection = FollowCam.GetCurrentCamRot().eulerAngles.y;
         Vector3 camRelativeMoveDir = Quaternion.Euler(0, camFacingDirection, 0) * moveDirection;
 
         // Used to stop character from sticking to walls.
@@ -121,17 +121,20 @@ public class PilgrimController : MonoBehaviour
         {
             MainRB.velocity = new Vector3(0f, MainRB.velocity.y, 0f);
             mixamoController.StopWalking();
+            FollowCam.CamTwistDirection(camRelativeMoveDir, true);
         }
         else
         {
             if (isCrouched)
             {
                 MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+                FollowCam.CamTwistDirection(camRelativeMoveDir);
             }
             else
             {
                 mixamoController.StartWalking();
                 MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+                FollowCam.CamTwistDirection(camRelativeMoveDir);
             }
         }
 
