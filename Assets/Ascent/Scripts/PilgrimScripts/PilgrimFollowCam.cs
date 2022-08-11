@@ -33,7 +33,7 @@ public class PilgrimFollowCam : MonoBehaviour
     private Vector3 baseCamOffset;
     private Quaternion currentCamRotation;
     private Vector3 previousCamRotation;
-    private Vector3 camTwist = Vector3.zero;
+    private Vector3 camTwistWorld = Vector3.zero;
 
     private bool offsetIsBusy = false;
     private bool rotIsBusy = false;
@@ -67,35 +67,21 @@ public class PilgrimFollowCam : MonoBehaviour
 
 
         // Twist cam to face direction of travel.
-        Quaternion targetTwist = new Quaternion(currentCamRotation.x + Quaternion.Euler(camTwist).x, currentCamRotation.y + Quaternion.Euler(camTwist).y, currentCamRotation.z, currentCamRotation.w);
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetTwist, 0.05f);
+        
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(camTwistWorld) * currentCamRotation, 0.05f);
     }
 
-    public void CamTwistDirection(Vector3 _moveDirection, bool stopped = false)
+    public void CamTwistDirection(Vector3 _movedir, bool _stopped = false)
     {
-        if (stopped)
+        if (_stopped)
         {
-            camTwist.x = 0;
-            camTwist.y = 0;
+            camTwistWorld.y = 0;
+            //camTwist.x = 0;
         }
 
-        // twist cam right or left
-        if (_moveDirection.x > 0)
-        {
-            camTwist.x = 0;
-            camTwist.y = 25;
-        }
-        else if (_moveDirection.x < 0)
-        {
-            camTwist.x = 0;
-            camTwist.y = -25;
-        }
-        // twist cam down
-        if (_moveDirection.z <0)
-        {
-            camTwist.y = 0;
-            camTwist.x = 20;
-        }
+        camTwistWorld = new Vector3(currentCamRotation.z, _movedir.x * 30f, currentCamRotation.x);
+
+        //Mathf.Clamp(_movedir.z * -30f, 0f, 50f)
     }
 
 
@@ -199,10 +185,10 @@ public class PilgrimFollowCam : MonoBehaviour
         while (elapsedTime <= _lerpDuration)
         {
             currentCamRotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / _lerpDuration);
-            transform.rotation = currentCamRotation;
+            //transform.rotation = currentCamRotation;
             elapsedTime += Time.deltaTime;
             yield return null;
-            transform.rotation = endRotation;
+            currentCamRotation = endRotation;
         }
         rotIsBusy = false;
     }

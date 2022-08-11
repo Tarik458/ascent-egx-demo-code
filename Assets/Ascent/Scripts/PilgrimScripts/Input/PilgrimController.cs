@@ -128,13 +128,13 @@ public class PilgrimController : MonoBehaviour
             if (isCrouched)
             {
                 MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * camRelativeMoveDir;
-                FollowCam.CamTwistDirection(camRelativeMoveDir);
+                FollowCam.CamTwistDirection(moveDirection);
             }
             else
             {
                 mixamoController.StartWalking();
                 MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
-                FollowCam.CamTwistDirection(camRelativeMoveDir);
+                FollowCam.CamTwistDirection(moveDirection);
             }
         }
 
