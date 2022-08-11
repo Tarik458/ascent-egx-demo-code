@@ -28,6 +28,10 @@ public class FireFlicker : MonoBehaviour
     private float MaxBrightness = 1.5f;
 
     [SerializeField]
+    [Tooltip("Particle effect to play when fire gets lit.")]
+    ParticleSystem FireParticle;
+
+    [SerializeField]
     private AudioClip lightUpFire;
 
     [SerializeField]
@@ -82,6 +86,7 @@ public class FireFlicker : MonoBehaviour
             yield return null;
         }
         isFlickering = true;
+        FireParticle.Play();
     }
 
     /// <summary>
