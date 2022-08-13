@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GraphicsUI : MonoBehaviour
 {
 
     [SerializeField]
-    private Dropdown ResolutionDropdown;
+    private TMP_Dropdown ResolutionDropdown;
 
     [SerializeField]
-    private Dropdown QualityDropdown;
+    private TMP_Dropdown QualityDropdown;
 
     [SerializeField]
     private Toggle FullScreenToggle;
