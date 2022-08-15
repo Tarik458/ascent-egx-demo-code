@@ -12,6 +12,11 @@ public class TriggerZoneInfo : MonoBehaviour
     [HideInInspector]
     public GameObject fireZoneObj;
 
+
+    // Bee Stuff
+    [HideInInspector]
+    public bool canControlBees = false;
+
     [HideInInspector]
     public bool inBeeZone = false;
     [HideInInspector]
@@ -20,6 +25,8 @@ public class TriggerZoneInfo : MonoBehaviour
     public GameObject beeZoneObj;
     private Beeeeez beeeeez;
 
+    [HideInInspector]
+    public bool canPlaceRibbons = false;
     [HideInInspector]
     public bool inHiveZone = false;
     [HideInInspector]
@@ -36,19 +43,22 @@ public class TriggerZoneInfo : MonoBehaviour
             }
         }
 
-        if (inBeeZone && !beesFollowing)
+        if (canControlBees)
         {
-            beeeeez.SetTarget(this.gameObject.transform);
-            beesFollowing = true;
-        }
-        else if (beesFollowing)
-        {
-            beeeeez.StopFollowing();
-            beesFollowing = false;
-            Debug.Log("bees stop following");
+            if (inBeeZone && !beesFollowing)
+            {
+                beeeeez.SetTarget(this.gameObject.transform);
+                beesFollowing = true;
+            }
+            else if (beesFollowing)
+            {
+                beeeeez.StopFollowing();
+                beesFollowing = false;
+                Debug.Log("bees stop following");
+            }
         }
 
-        if (inHiveZone)
+        if (inHiveZone && canPlaceRibbons)
         {
             hiveZoneObj.GetComponent<HiveData>().ApplyRibbon();
         }
