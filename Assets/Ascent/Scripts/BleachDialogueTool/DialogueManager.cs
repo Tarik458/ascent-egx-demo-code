@@ -23,10 +23,18 @@ public class DialogueManager : MonoBehaviour
     private float TextDisplaySpedUp = 0.005f;
 
     [SerializeField]
+    [Tooltip("0th item should be left blank because of broken inspector element.")]
     private List<DialogueIteration> DialogueIterations;
+    [SerializeField]
+    [Tooltip("If the dialogue is a bit long winded check this to skip after first time to the second iteration element which could be the same gist written more concisely.")]
+    private bool AutoIterateToSecond = false;
 
     [SerializeField]
     private TextMeshProUGUI TextBox;
+
+    private int dialogueItrIndexToUse = 1;
+
+    private int textIterator = 0;
 
     private bool isRunning = false;
     private bool isSpedUp = false;
@@ -51,10 +59,9 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        
+        Controls.Pilgrim.Interact.performed += ctx => StartDisplayText();
     }
 
     // Update is called once per frame
@@ -64,23 +71,58 @@ public class DialogueManager : MonoBehaviour
     }
 
 
-    private IEnumerator DisplayText(int _index)
+    public void SetDialogueIterationToUse(int _dialogueIterationIndex)
+    {
+        dialogueItrIndexToUse = _dialogueIterationIndex;
+    }
+
+    private void StartDisplayText()
+    {
+        if (!isRunning)
+        {
+            isRunning = true;
+            StartCoroutine(DisplayText(textIterator));
+        }
+        else
+        {
+            isSpedUp = true;
+        }
+    }
+
+    private IEnumerator DisplayText(int _dialogueIndex)
     {
         string strToDisplay;
         AudioSource.Stop();
-
-        for (int i = 0; i < DialogueIterations[0].Dialogue[_index].Length; i++)
+        if (textIterator < DialogueIterations[dialogueItrIndexToUse].Dialogue.Count)
         {
-            strToDisplay = DialogueIterations[0].Dialogue[_index].Substring(0, i);
-            TextBox.text = strToDisplay;
-            if (isSpedUp)
+            for (int i = 0; i <= DialogueIterations[dialogueItrIndexToUse].Dialogue[_dialogueIndex].Length; i++)
             {
-                yield return new WaitForSeconds(TextDisplaySpedUp);
+                strToDisplay = DialogueIterations[dialogueItrIndexToUse].Dialogue[_dialogueIndex].Substring(0, i);
+                TextBox.text = strToDisplay;
+                if (isSpedUp)
+                {
+                    yield return new WaitForSeconds(TextDisplaySpedUp);
+                }
+                else
+                {
+                    yield return new WaitForSeconds(TextDisplaySpeed);
+                }
             }
-            else
-            {
-                yield return new WaitForSeconds(TextDisplaySpeed);
-            }
+
+        
+            textIterator++;
+        }
+        // If it was the first time displaying dialogue switch to second dialogue block
+        else if (textIterator == DialogueIterations[dialogueItrIndexToUse].Dialogue.Count && dialogueItrIndexToUse == 1 && AutoIterateToSecond)
+        {
+            TextBox.text = string.Empty;
+            dialogueItrIndexToUse++;
+            textIterator = 0;
+        }
+        else if(textIterator == DialogueIterations[dialogueItrIndexToUse].Dialogue.Count)
+        {
+            TextBox.text = string.Empty;
+            textIterator = 0;
         }
         isRunning = false;
         isSpedUp = false;
