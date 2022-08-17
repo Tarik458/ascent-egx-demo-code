@@ -6,39 +6,39 @@ public class FireFlicker : MonoBehaviour
 {
     [SerializeField]
     [Tooltip("Default is unlit, only torch should start lit")]
-    private bool IsLit = false;
+    protected bool IsLit = false;
 
     [SerializeField]
     [Tooltip("Point light on the torch / fire that wants flicker effect")]
-    private Light AffectedLight;
+    protected Light AffectedLight;
 
     [SerializeField]
     [Tooltip("How fast the light flickers, could depend on wind etc, default 0.1f")]
     [Range(0.01f, 0.25f)]
-    private float FlickerSpeed = 0.1f;
+    protected float FlickerSpeed = 0.1f;
 
     [SerializeField]
     [Tooltip("Minimum brightness the flame will dip to, default 0.7f")]
-    [Range(0.5f, 0.9f)]
-    private float MinBrightness = 0.7f;
+    [Range(0f, 8f)]
+    protected float MinBrightness = 0.7f;
 
     [SerializeField]
     [Tooltip("Maximum brightness the flame will dip to, default 1.5f")]
-    [Range(1.1f, 1.9f)]
-    private float MaxBrightness = 1.5f;
+    [Range(0f, 25f)]
+    protected float MaxBrightness = 1.5f;
 
     [SerializeField]
     [Tooltip("Particle effect to play when fire gets lit.")]
     ParticleSystem FireParticle;
 
     [SerializeField]
-    private AudioClip lightUpFire;
+    protected AudioClip lightUpFire;
 
     [SerializeField]
     AudioSource audioSource;
 
 
-    private bool isFlickering;
+    protected bool isFlickering;
 
     public bool GetLitState()
     {
@@ -53,13 +53,13 @@ public class FireFlicker : MonoBehaviour
         audioSource.PlayOneShot(lightUpFire);
     }
 
-    private void Start()
+    protected void Start()
     {
         Light(IsLit);
         isFlickering = IsLit;
     }
 
-    private void FixedUpdate()
+    protected void FixedUpdate()
     {
         if (isFlickering)
         {
@@ -71,7 +71,7 @@ public class FireFlicker : MonoBehaviour
     /// Increases the brightness of the flame as it is lit.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator Ignition()
+    protected IEnumerator Ignition()
     {
         float ignitionDuration = 2.5f;
         float elapsedTime = 0f;
@@ -93,7 +93,7 @@ public class FireFlicker : MonoBehaviour
     /// Set the parent object of the light component active or inactive as defined by "status".
     /// </summary>
     /// <param name="status"></param>
-    private void Light(bool status)
+    protected void Light(bool status)
     {
         AffectedLight.gameObject.SetActive(status);
     }
