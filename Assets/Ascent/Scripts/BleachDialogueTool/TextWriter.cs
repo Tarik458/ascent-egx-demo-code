@@ -11,6 +11,10 @@ public class TextWriter : MonoBehaviour
     public bool isSpedUp = false;
 
     [SerializeField]
+    [Tooltip("Object with the text box and any game overlay stuff to show/ hide.")]
+    private GameObject UIObjToShow;
+
+    [SerializeField]
     private List<AudioClip> VoiceBabbleClips;
     [SerializeField]
     private AudioSource AudioSource;
@@ -25,10 +29,19 @@ public class TextWriter : MonoBehaviour
 
     private int textIterator = 0;
 
+    private void Start()
+    {
+
+        UIObjToShow.SetActive(false);
+    }
+
+
     public void StartDisplayText(DialogueIteration _dialogueItrToUse, DialogueModule _caller, bool _autoIterate = false)
     {
         if (!isRunning)
         {
+
+            UIObjToShow.SetActive(true);
             isRunning = true;
             StartCoroutine(DisplayText(textIterator, _dialogueItrToUse, _caller, _autoIterate));
         }
@@ -66,11 +79,13 @@ public class TextWriter : MonoBehaviour
             TextBox.text = string.Empty;
             _caller.IncrementDialogueIteration();
             textIterator = 0;
+            UIObjToShow.SetActive(false);
         }
         else if (textIterator == _dialogueItrToUse.Dialogue.Count)
         {
             TextBox.text = string.Empty;
             textIterator = 0;
+            UIObjToShow.SetActive(false);
         }
         isRunning = false;
         isSpedUp = false;
