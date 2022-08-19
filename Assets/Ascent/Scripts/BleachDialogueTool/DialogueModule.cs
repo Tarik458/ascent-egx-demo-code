@@ -66,6 +66,10 @@ public class DialogueModule : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             isInZone = false;
+            if (textWriter.InteractionStarted == false)
+            {
+                canInteract = false;
+            }
         }
     }
 

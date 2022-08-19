@@ -6,9 +6,7 @@ using TMPro;
 public class TextWriter : MonoBehaviour
 {
     [HideInInspector]
-    public bool isRunning = false;
-    [HideInInspector]
-    public bool isSpedUp = false;
+    public bool InteractionStarted = false;
 
     [SerializeField]
     [Tooltip("Object with the text box and any game overlay stuff to show/ hide.")]
@@ -29,6 +27,10 @@ public class TextWriter : MonoBehaviour
 
     private int textIterator = 0;
 
+    private bool isRunning = false;
+
+    private bool isSpedUp = false;
+
     private void Start()
     {
 
@@ -38,6 +40,7 @@ public class TextWriter : MonoBehaviour
 
     public void StartDisplayText(DialogueIteration _dialogueItrToUse, DialogueModule _caller, bool _autoIterate = false)
     {
+        InteractionStarted = true;
         if (!isRunning)
         {
 
@@ -76,20 +79,24 @@ public class TextWriter : MonoBehaviour
         }
         else if (textIterator == _dialogueItrToUse.Dialogue.Count && _autoIterate)
         {
-            TextBox.text = string.Empty;
             _caller.IncrementDialogueIteration();
-            _caller.EndInteraction();
-            textIterator = 0;
-            UIObjToShow.SetActive(false);
+            FinishDisplaying(_caller);
         }
         else if (textIterator == _dialogueItrToUse.Dialogue.Count)
         {
-            TextBox.text = string.Empty;
-            _caller.EndInteraction();
-            textIterator = 0;
-            UIObjToShow.SetActive(false);
+            FinishDisplaying(_caller);
         }
         isRunning = false;
         isSpedUp = false;
     }
+
+    private void FinishDisplaying(DialogueModule _caller)
+    {
+        TextBox.text = string.Empty;
+        _caller.EndInteraction();
+        InteractionStarted = false;
+        textIterator = 0;
+        UIObjToShow.SetActive(false);
+    }
+
 }
