@@ -19,10 +19,6 @@ public class DialogueModule : MonoBehaviour
     [Tooltip("0th item should be left blank because of broken inspector element.")]
     private List<DialogueIteration> DialogueIterations;
 
-    [SerializeField]
-    [Tooltip("The trigger trigger fir the pilgrim to enter to be able to interact with the Dialogue")]
-    private Collider TriggerZone;
-
     private int dialogueItrIndexToUse = 1;
 
     private TextWriter textWriter;
