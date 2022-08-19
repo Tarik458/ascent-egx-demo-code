@@ -68,7 +68,7 @@ public class PilgrimFollowCam : MonoBehaviour
 
         // Twist cam to face direction of travel.
         
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(camTwistWorld) * currentCamRotation, 0.05f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(camTwistWorld) * currentCamRotation, 0.025f);
     }
 
     public void CamTwistDirection(Vector3 _movedir, bool _stopped = false)
@@ -79,7 +79,7 @@ public class PilgrimFollowCam : MonoBehaviour
             //camTwist.x = 0;
         }
 
-        camTwistWorld = new Vector3(currentCamRotation.z, _movedir.x * 30f, currentCamRotation.x);
+        camTwistWorld = new Vector3(currentCamRotation.z, _movedir.x * 40f, currentCamRotation.x);
 
         //Mathf.Clamp(_movedir.z * -30f, 0f, 50f)
     }
@@ -188,8 +188,8 @@ public class PilgrimFollowCam : MonoBehaviour
             //transform.rotation = currentCamRotation;
             elapsedTime += Time.deltaTime;
             yield return null;
-            currentCamRotation = endRotation;
         }
+        currentCamRotation = endRotation;
         rotIsBusy = false;
     }
 }
