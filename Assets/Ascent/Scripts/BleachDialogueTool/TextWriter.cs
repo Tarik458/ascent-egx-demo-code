@@ -78,12 +78,14 @@ public class TextWriter : MonoBehaviour
         {
             TextBox.text = string.Empty;
             _caller.IncrementDialogueIteration();
+            _caller.EndInteraction();
             textIterator = 0;
             UIObjToShow.SetActive(false);
         }
         else if (textIterator == _dialogueItrToUse.Dialogue.Count)
         {
             TextBox.text = string.Empty;
+            _caller.EndInteraction();
             textIterator = 0;
             UIObjToShow.SetActive(false);
         }

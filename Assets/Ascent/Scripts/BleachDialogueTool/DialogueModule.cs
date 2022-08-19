@@ -27,6 +27,7 @@ public class DialogueModule : MonoBehaviour
 
     private TextWriter textWriter;
 
+    private bool isInZone = false;
     private bool canInteract = false;
 
     /// <summary>
@@ -60,19 +61,21 @@ public class DialogueModule : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             canInteract = true;
+            isInZone = true;
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            canInteract = false;
+            isInZone = false;
         }
     }
 
     private void CallWriter()
     {
-        if (canInteract)
+        if (isInZone || canInteract)
         {
             if (DialogueIterations[dialogueItrIndexToUse].AutoIterateToNextDialogue)
             {
@@ -95,6 +98,10 @@ public class DialogueModule : MonoBehaviour
         dialogueItrIndexToUse++;
     }
 
+    public void EndInteraction()
+    {
+        canInteract = false;
+    }
 
     private void OnEnable()
     {
