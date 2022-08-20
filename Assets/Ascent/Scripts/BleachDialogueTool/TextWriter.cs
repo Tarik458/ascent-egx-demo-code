@@ -25,7 +25,7 @@ public class TextWriter : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI TextBox;
 
-    private int textIterator = 0;
+    private int textIterator = 1;
 
     private bool isRunning = false;
 
@@ -38,15 +38,14 @@ public class TextWriter : MonoBehaviour
     }
 
 
-    public void StartDisplayText(DialogueIteration _dialogueItrToUse, DialogueModule _caller, bool _autoIterate = false)
+    public void StartDisplayText(DialogueIteration _dialogueItrToUse, DialogueModule _caller)
     {
         InteractionStarted = true;
         if (!isRunning)
         {
-
             UIObjToShow.SetActive(true);
             isRunning = true;
-            StartCoroutine(DisplayText(textIterator, _dialogueItrToUse, _caller, _autoIterate));
+            StartCoroutine(DisplayText(textIterator, _dialogueItrToUse, _caller));
         }
         else
         {
@@ -54,16 +53,26 @@ public class TextWriter : MonoBehaviour
         }
     }
 
-    private IEnumerator DisplayText(int _dialogueIndex, DialogueIteration _dialogueItrToUse, DialogueModule _caller, bool _autoIterate)
+    private IEnumerator DisplayText(int _dialogueIndex, DialogueIteration _dialogueItrToUse, DialogueModule _caller)
     {
         string strToDisplay;
         AudioSource.Stop();
-        if (textIterator < _dialogueItrToUse.Dialogue.Count)
+        if (textIterator < _dialogueItrToUse.DialogueText.Count)
         {
-            for (int i = 0; i <= _dialogueItrToUse.Dialogue[_dialogueIndex].Length; i++)
+            for (int i = 0; i <= _dialogueItrToUse.DialogueText[_dialogueIndex].Text.Length; i++)
             {
-                strToDisplay = _dialogueItrToUse.Dialogue[_dialogueIndex].Substring(0, i);
+                strToDisplay = _dialogueItrToUse.DialogueText[_dialogueIndex].Text.Substring(0, i);
                 TextBox.text = strToDisplay;
+                // Play voice babble clips
+                if(!AudioSource.isPlaying && _dialogueItrToUse.DialogueText[_dialogueIndex].SpecificClipToPlay == null && _dialogueItrToUse.PlayVoiceBabbleClips)
+                {
+                    AudioSource.PlayOneShot(VoiceBabbleClips[Random.Range(0, VoiceBabbleClips.Count)]);
+                }
+                else if (!AudioSource.isPlaying && _dialogueItrToUse.DialogueText[_dialogueIndex].SpecificClipToPlay != null)
+                {
+                    AudioSource.PlayOneShot(_dialogueItrToUse.DialogueText[_dialogueIndex].SpecificClipToPlay);
+                }
+
                 if (isSpedUp)
                 {
                     yield return new WaitForSeconds(TextDisplaySpedUp);
@@ -77,12 +86,12 @@ public class TextWriter : MonoBehaviour
 
             textIterator++;
         }
-        else if (textIterator == _dialogueItrToUse.Dialogue.Count && _autoIterate)
+        else if (textIterator == _dialogueItrToUse.DialogueText.Count && _dialogueItrToUse.AutoIterateToNextDialogue)
         {
             _caller.IncrementDialogueIteration();
             FinishDisplaying(_caller);
         }
-        else if (textIterator == _dialogueItrToUse.Dialogue.Count)
+        else if (textIterator == _dialogueItrToUse.DialogueText.Count)
         {
             FinishDisplaying(_caller);
         }
@@ -95,7 +104,7 @@ public class TextWriter : MonoBehaviour
         TextBox.text = string.Empty;
         _caller.EndInteraction();
         InteractionStarted = false;
-        textIterator = 0;
+        textIterator = 1;
         UIObjToShow.SetActive(false);
     }
 

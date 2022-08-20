@@ -5,16 +5,25 @@ using UnityEngine;
 [System.Serializable]
 public class DialogueIteration
 {
-    public List<string> Dialogue;
-    [SerializeField]
+    [System.Serializable]
+    public class Dialogue
+    {
+        public string Text;
+        [Tooltip("Only fill if needed, will default to voice babble clips.")]
+        public AudioClip SpecificClipToPlay = null;
+    }
+    public List<Dialogue> DialogueText;
+
     [Tooltip("If the dialogue is a bit long winded check this to skip after first time to the next iteration element which could be the same gist written more concisely.")]
     public bool AutoIterateToNextDialogue = false;
+
+    public bool PlayVoiceBabbleClips = true;
 }
 
 public class DialogueModule : MonoBehaviour
 {
 
-    [Header("0th element should be left empty")]
+    [Header("0th elements should be left empty")]
     [SerializeField]
     [Tooltip("0th item should be left blank because of broken inspector element.")]
     private List<DialogueIteration> DialogueIterations;
@@ -77,14 +86,7 @@ public class DialogueModule : MonoBehaviour
     {
         if (isInZone || canInteract)
         {
-            if (DialogueIterations[dialogueItrIndexToUse].AutoIterateToNextDialogue)
-            {
-                textWriter.StartDisplayText(DialogueIterations[dialogueItrIndexToUse], this, true);
-            }
-            else
-            {
                 textWriter.StartDisplayText(DialogueIterations[dialogueItrIndexToUse], this);
-            }
         }
     }
 
