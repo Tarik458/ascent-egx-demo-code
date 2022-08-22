@@ -47,6 +47,7 @@ public class MeadController : MonoBehaviour
         {
             ribbonsEnabled = value;
             triggerZoneInfo.canPlaceRibbons = value;
+            Debug.Log("ribbons placing " + value);
         }
     }
 
