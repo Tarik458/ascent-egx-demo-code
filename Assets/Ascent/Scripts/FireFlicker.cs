@@ -29,7 +29,15 @@ public class FireFlicker : MonoBehaviour
 
     [SerializeField]
     [Tooltip("Particle effect to play when fire gets lit.")]
-    ParticleSystem FireParticle;
+    protected ParticleSystem IgniteFireParticle = null;
+
+    [SerializeField]
+    [Tooltip("Particle effect to play when fire is lit.")]
+    protected ParticleSystem FireParticle;
+
+    [SerializeField]
+    [Tooltip("Optional Particle effect to play when fire gets lit.")]
+    protected ParticleSystem GodRayParticle = null;
 
     [SerializeField]
     protected AudioClip lightUpFire;
@@ -50,6 +58,7 @@ public class FireFlicker : MonoBehaviour
         IsLit = true;
         Light(IsLit);
         StartCoroutine(Ignition());
+        IgniteFireParticle.Play();
         audioSource.PlayOneShot(lightUpFire);
     }
 
@@ -61,6 +70,13 @@ public class FireFlicker : MonoBehaviour
 
     protected void FixedUpdate()
     {
+        if (IgniteFireParticle != null)
+        {
+            if (IsLit && !IgniteFireParticle.isPlaying && !FireParticle.isPlaying)
+            {
+                FireParticle.Play();
+            }
+        }
         if (isFlickering)
         {
             AffectedLight.intensity = Mathf.Lerp(AffectedLight.intensity, Random.Range(MinBrightness, MaxBrightness), FlickerSpeed);
@@ -86,7 +102,11 @@ public class FireFlicker : MonoBehaviour
             yield return null;
         }
         isFlickering = true;
-        FireParticle.Play();
+        if (GodRayParticle != null)
+        {
+            GodRayParticle.Play();
+        }
+        
     }
 
     /// <summary>
