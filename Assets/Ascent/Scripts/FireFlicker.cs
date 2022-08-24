@@ -9,6 +9,10 @@ public class FireFlicker : MonoBehaviour
     protected bool IsLit = false;
 
     [SerializeField]
+    [Tooltip("Default to floor fire anim.")]
+    protected bool IsWallFire = false;
+
+    [SerializeField]
     [Tooltip("Point light on the torch / fire that wants flicker effect")]
     protected Light AffectedLight;
 
@@ -51,6 +55,11 @@ public class FireFlicker : MonoBehaviour
     public bool GetLitState()
     {
         return IsLit;
+    }
+
+    public bool IsWallFireQuery()
+    {
+        return IsWallFire;
     }
 
     public void LightFire()
