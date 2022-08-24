@@ -39,7 +39,15 @@ public class TriggerZoneInfo : MonoBehaviour
             if (fireZoneObj.GetComponent<FireFlicker>().GetLitState() == false)
             {
                 fireZoneObj.GetComponent<FireFlicker>().LightFire();
-                _mixamo.LightFire();
+                if (fireZoneObj.GetComponent<FireFlicker>().IsWallFireQuery())
+                {
+                    _mixamo.LightWallFire();
+                }
+                else 
+                {
+                    _mixamo.LightFire(); 
+                }
+                
             }
         }
 
