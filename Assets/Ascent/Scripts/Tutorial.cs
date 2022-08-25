@@ -5,8 +5,16 @@ using UnityEngine.InputSystem;
 
 public class Tutorial : MonoBehaviour
 {
+    public bool PlayTutorial = true;
+
+    [SerializeField]
+    private int NumberOfWASDNeeded = 4;
 
 
+    [SerializeField]
+    private GameObject WASDVisual;
+    [SerializeField]
+    private GameObject JumpVisual;
 
     private int tutorialIteration = 0;
 
@@ -28,18 +36,19 @@ public class Tutorial : MonoBehaviour
             return _controls = new PlayerControls();
         }
     }
+
     // Start is called before the first frame update
     void Start()
     {
-        Controls.Pilgrim.Movement.performed += CheckForWASD;
+        WASDVisual.SetActive(false);
+        JumpVisual.SetActive(false);
+        if (PlayTutorial)
+        {
+            Controls.Pilgrim.Movement.performed += CheckForWASD;
+            DisplayTutorial();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        DisplayTutorial();    
-    
-    }
 
     private void DisplayTutorial()
     {
@@ -47,15 +56,16 @@ public class Tutorial : MonoBehaviour
         {
             case 0:
                 // WASD
-
+                WASDVisual.SetActive(true);
                 break;
             case 1:
                 // Jump
-
+                WASDVisual.SetActive(false);
+                JumpVisual.SetActive(true);
                 break;
             case 2:
                 // Interact
-
+                JumpVisual.SetActive(false);
                 break;
         }
     }
@@ -92,13 +102,21 @@ public class Tutorial : MonoBehaviour
                 completionCounter++;
             }
         }
-        if (completionCounter == 4)
+        if (completionCounter == NumberOfWASDNeeded)
         {
             tutorialIteration++;
-            Debug.Log("Completed WASD tut");
+            DisplayTutorial();
             Controls.Pilgrim.Movement.performed -= CheckForWASD;
+            Controls.Pilgrim.Jump.performed += CheckForJump;
         }
 
+    }
+
+    private void CheckForJump(InputAction.CallbackContext _ctx)
+    {
+        tutorialIteration++;
+        DisplayTutorial();
+        Controls.Pilgrim.Jump.performed -= CheckForJump;
     }
 
 
