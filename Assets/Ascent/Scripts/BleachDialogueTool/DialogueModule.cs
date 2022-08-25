@@ -31,6 +31,7 @@ public class DialogueModule : MonoBehaviour
     private int dialogueItrIndexToUse = 1;
 
     private TextWriter textWriter;
+    private Tutorial tut;
 
     private bool isInZone = false;
     private bool canInteract = false;
@@ -57,6 +58,7 @@ public class DialogueModule : MonoBehaviour
     void Start()
     {
         textWriter = FindObjectOfType<TextWriter>();
+        tut = FindObjectOfType<Tutorial>();
         Controls.Pilgrim.Interact.performed += ctx => CallWriter();
     }
 
@@ -67,6 +69,7 @@ public class DialogueModule : MonoBehaviour
         {
             canInteract = true;
             isInZone = true;
+            tut.ShowInteractionTutorial();
         }
     }
 
@@ -78,6 +81,7 @@ public class DialogueModule : MonoBehaviour
             if (textWriter.InteractionStarted == false)
             {
                 canInteract = false;
+                tut.ShowInteractionTutorial(false);
             }
         }
     }

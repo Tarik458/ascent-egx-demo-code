@@ -32,6 +32,14 @@ public class TriggerZoneInfo : MonoBehaviour
     [HideInInspector]
     public GameObject hiveZoneObj;
 
+    [HideInInspector]
+    public Tutorial tut;
+
+    private void Start()
+    {
+        tut = FindObjectOfType<Tutorial>();
+    }
+
     public void TestInterations(MixamoController _mixamo)
     {
         if (inFireZone)
@@ -47,7 +55,6 @@ public class TriggerZoneInfo : MonoBehaviour
                 {
                     _mixamo.LightFire(); 
                 }
-                
             }
         }
 
@@ -76,6 +83,10 @@ public class TriggerZoneInfo : MonoBehaviour
     {
         inFireZone = true;
         fireZoneObj = _objectRef;
+        if (!fireZoneObj.GetComponent<FireFlicker>().GetLitState())
+        {
+            tut.ShowInteractionTutorial();
+        }
     }
 
     public void EnterBeeZone(GameObject _objectRef)
@@ -83,6 +94,7 @@ public class TriggerZoneInfo : MonoBehaviour
         inBeeZone = true;
         beeZoneObj = _objectRef;
         beeeeez = beeZoneObj.GetComponent<Beeeeez>();
+        tut.ShowInteractionTutorial();
     }
 
     public void ScareBees()
@@ -95,6 +107,10 @@ public class TriggerZoneInfo : MonoBehaviour
     {
         inHiveZone = true;
         hiveZoneObj = _objectRef;
+        if (!hiveZoneObj.GetComponent<HiveData>().GetRibbonState() && canPlaceRibbons)
+        {
+            tut.ShowInteractionTutorial();
+        }
         if (beesFollowing)
         {
             if (_objectRef.GetComponent<HiveData>().BeesEnter(beeeeez))

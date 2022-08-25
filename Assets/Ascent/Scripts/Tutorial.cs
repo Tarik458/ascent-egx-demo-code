@@ -15,6 +15,10 @@ public class Tutorial : MonoBehaviour
     private GameObject WASDVisual;
     [SerializeField]
     private GameObject JumpVisual;
+    [SerializeField]
+    private GameObject InteractionVisual;
+
+
 
     private int tutorialIteration = 0;
 
@@ -37,18 +41,29 @@ public class Tutorial : MonoBehaviour
         }
     }
 
+    public void ShowInteractionTutorial(bool _show = true)
+    {
+        if (PlayTutorial)
+        {
+            InteractionVisual.SetActive(_show);
+        }
+    }
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         WASDVisual.SetActive(false);
         JumpVisual.SetActive(false);
+        InteractionVisual.SetActive(false);
         if (PlayTutorial)
         {
             Controls.Pilgrim.Movement.performed += CheckForWASD;
             DisplayTutorial();
         }
+        Controls.Pilgrim.Interact.performed += ctx => ShowInteractionTutorial(false);
     }
-
 
     private void DisplayTutorial()
     {
