@@ -69,7 +69,10 @@ public class DialogueModule : MonoBehaviour
         {
             canInteract = true;
             isInZone = true;
-            tut.ShowInteractionTutorial();
+            if (tut != null)
+            {
+                tut.ShowInteractionTutorial();
+            }
         }
     }
 
@@ -81,7 +84,10 @@ public class DialogueModule : MonoBehaviour
             if (textWriter.InteractionStarted == false)
             {
                 canInteract = false;
-                tut.ShowInteractionTutorial(false);
+                if (tut != null)
+                {
+                    tut.ShowInteractionTutorial(false);
+                }
             }
         }
     }
