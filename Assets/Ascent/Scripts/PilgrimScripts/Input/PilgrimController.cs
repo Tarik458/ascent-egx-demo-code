@@ -294,14 +294,17 @@ public class PilgrimController : MonoBehaviour
                 break;
             case "FireZone":
                 triggerZoneInfo.inFireZone = false;
+                triggerZoneInfo.tut.ShowInteractionTutorial(false);
                 mixamoController.ExitInteractionZone();
                 break;
             case "BeeSwarm":
                 triggerZoneInfo.inBeeZone = false;
+                triggerZoneInfo.tut.ShowInteractionTutorial(false);
                 mixamoController.ExitInteractionZone();
                 break;
             case "HiveZone":
                 triggerZoneInfo.inHiveZone = false;
+                triggerZoneInfo.tut.ShowInteractionTutorial(false);
                 mixamoController.ExitInteractionZone();
                 break;
             default:

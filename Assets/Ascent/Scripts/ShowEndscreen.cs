@@ -14,11 +14,15 @@ public class ShowEndscreen : MonoBehaviour
     [SerializeField]
     AudioSource audioSource;
 
+    private bool alreadyTriggered = false;
     public void ShowCanvas()
     {
-
-        StartCoroutine(FadeInCanvas());
-        audioSource.Play();
+        if (!alreadyTriggered)
+        {
+            StartCoroutine(FadeInCanvas());
+            audioSource.Play();
+            alreadyTriggered = true;
+        }
     }
 
     private IEnumerator FadeInCanvas()
