@@ -83,18 +83,39 @@ public class TriggerZoneInfo : MonoBehaviour
     {
         inFireZone = true;
         fireZoneObj = _objectRef;
-        if (!fireZoneObj.GetComponent<FireFlicker>().GetLitState())
+        if (!fireZoneObj.GetComponent<FireFlicker>().GetLitState() && tut != null)
         {
             tut.ShowInteractionTutorial();
         }
     }
+    public void ExitFireZone()
+    {
+        inFireZone = false;
+        if (tut != null)
+        {
+            tut.ShowInteractionTutorial(false);
+        }
+    }
+
+
 
     public void EnterBeeZone(GameObject _objectRef)
     {
         inBeeZone = true;
         beeZoneObj = _objectRef;
         beeeeez = beeZoneObj.GetComponent<Beeeeez>();
-        tut.ShowInteractionTutorial();
+        if (tut != null)
+        {
+            tut.ShowInteractionTutorial();
+        }
+    }
+    public void ExitBeeZone()
+    {
+        inBeeZone = false;
+        if (tut != null)
+        {
+            tut.ShowInteractionTutorial(false);
+        }
     }
 
     public void ScareBees()
@@ -107,7 +128,7 @@ public class TriggerZoneInfo : MonoBehaviour
     {
         inHiveZone = true;
         hiveZoneObj = _objectRef;
-        if (!hiveZoneObj.GetComponent<HiveData>().GetRibbonState() && canPlaceRibbons)
+        if (!hiveZoneObj.GetComponent<HiveData>().GetRibbonState() && canPlaceRibbons && tut != null)
         {
             tut.ShowInteractionTutorial();
         }
@@ -121,7 +142,14 @@ public class TriggerZoneInfo : MonoBehaviour
 
         return _objectRef.GetComponent<HiveData>().GetRibbonState();
     }
-
+    public void ExitHiveZone()
+    {
+        inHiveZone = false;
+        if (tut != null)
+        {
+            tut.ShowInteractionTutorial(false);
+        }
+    }
 
     public void EndGame(GameObject _objectRef)
     {
