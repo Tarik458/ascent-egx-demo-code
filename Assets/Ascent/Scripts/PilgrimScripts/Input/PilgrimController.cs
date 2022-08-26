@@ -52,6 +52,8 @@ public class PilgrimController : MonoBehaviour
     [Tooltip("Temporary script for controlling Mixamo anims.")]
     private MixamoController mixamoController;
 
+    [SerializeField]
+    private AudioClip[] Footsteps;
 
     private Vector3 moveDirection;
     private float camFacingDirection;
@@ -136,6 +138,12 @@ public class PilgrimController : MonoBehaviour
                 MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
                 FollowCam.CamTwistDirection(moveDirection);
             }
+
+            if(!isJumping && !GetComponent<AudioSource>().isPlaying)
+            {
+                GetComponent<AudioSource>().PlayOneShot(Footsteps[Random.Range(0, Footsteps.Length - 1)]);
+            }
+
         }
 
         if (moveDirection != Vector3.zero)
