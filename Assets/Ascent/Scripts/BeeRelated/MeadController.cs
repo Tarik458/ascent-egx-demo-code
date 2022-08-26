@@ -80,6 +80,7 @@ public class MeadController : MonoBehaviour
         }
         SteppyStoneBlocker.SetActive(false);
         IllBoi.material = HealedBoiMat;
+        IllBoi.gameObject.GetComponent<DialogueModule>().SetDialogueIterationToUse(3);
     }
 
 }
