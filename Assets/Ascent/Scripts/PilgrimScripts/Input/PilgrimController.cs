@@ -52,6 +52,8 @@ public class PilgrimController : MonoBehaviour
     [Tooltip("Temporary script for controlling Mixamo anims.")]
     private MixamoController mixamoController;
 
+    [SerializeField]
+    private AudioClip[] Footsteps;
 
     private Vector3 moveDirection;
     private float camFacingDirection;
@@ -110,7 +112,7 @@ public class PilgrimController : MonoBehaviour
 
     private void Update()
     {
-        camFacingDirection = FollowCam.transform.eulerAngles.y;
+        camFacingDirection = FollowCam.GetCurrentCamRot().eulerAngles.y;
         Vector3 camRelativeMoveDir = Quaternion.Euler(0, camFacingDirection, 0) * moveDirection;
 
         // Used to stop character from sticking to walls.
@@ -121,18 +123,27 @@ public class PilgrimController : MonoBehaviour
         {
             MainRB.velocity = new Vector3(0f, MainRB.velocity.y, 0f);
             mixamoController.StopWalking();
+            FollowCam.CamTwistDirection(camRelativeMoveDir, true);
         }
         else
         {
             if (isCrouched)
             {
                 MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+                FollowCam.CamTwistDirection(moveDirection);
             }
             else
             {
                 mixamoController.StartWalking();
                 MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
+                FollowCam.CamTwistDirection(moveDirection);
             }
+
+            if(!isJumping && !GetComponent<AudioSource>().isPlaying)
+            {
+                GetComponent<AudioSource>().PlayOneShot(Footsteps[Random.Range(0, Footsteps.Length - 1)]);
+            }
+
         }
 
         if (moveDirection != Vector3.zero)
@@ -290,20 +301,18 @@ public class PilgrimController : MonoBehaviour
                 OnCrouch(false);
                 break;
             case "FireZone":
-                triggerZoneInfo.inFireZone = false;
-                mixamoController.ExitInteractionZone();
+                triggerZoneInfo.ExitFireZone();
                 break;
             case "BeeSwarm":
-                triggerZoneInfo.inBeeZone = false;
-                mixamoController.ExitInteractionZone();
+                triggerZoneInfo.ExitBeeZone();
                 break;
             case "HiveZone":
-                triggerZoneInfo.inHiveZone = false;
-                mixamoController.ExitInteractionZone();
+                triggerZoneInfo.ExitHiveZone();
                 break;
             default:
                 break;
         }
+        mixamoController.ExitInteractionZone();
     }
 
 

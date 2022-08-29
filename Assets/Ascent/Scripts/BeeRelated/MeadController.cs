@@ -22,8 +22,36 @@ public class MeadController : MonoBehaviour
     [SerializeField]
     private Material HealedBoiMat;
 
+    [SerializeField]
+    private TriggerZoneInfo triggerZoneInfo;
 
     private bool mead = false;
+
+    // Bee Puzzle Vars
+    private bool beePowersEnabled = false;
+    public bool BeePowersEnabled
+    {
+        get { return beePowersEnabled; }
+        set 
+        {
+            beePowersEnabled = value;
+            triggerZoneInfo.canControlBees = value;
+        }
+    }
+
+    private bool ribbonsEnabled = false;
+    public bool RibbonsEnabled
+    {
+        get { return ribbonsEnabled; }
+        set
+        {
+            ribbonsEnabled = value;
+            triggerZoneInfo.canPlaceRibbons = value;
+            Debug.Log("ribbons placing " + value);
+        }
+    }
+
+
 
     private void Update()
     {
@@ -52,6 +80,7 @@ public class MeadController : MonoBehaviour
         }
         SteppyStoneBlocker.SetActive(false);
         IllBoi.material = HealedBoiMat;
+        IllBoi.gameObject.GetComponent<DialogueModule>().SetDialogueIterationToUse(3);
     }
 
 }

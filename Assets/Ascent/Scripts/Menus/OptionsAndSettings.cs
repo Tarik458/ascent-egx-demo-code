@@ -17,7 +17,7 @@ public class OptionsAndSettings : MonoBehaviour
     /// </summary>
     private List<string> resolutionOptions = new();
 
-    private int qualityLevel = QualitySettings.GetQualityLevel();
+    private int qualityLevel;
 
     private bool isFullScreen;
 
@@ -40,6 +40,8 @@ public class OptionsAndSettings : MonoBehaviour
 
     private void Awake()
     {
+        qualityLevel = QualitySettings.GetQualityLevel();
+
         // Keep only this object for the settings, destroy object if one already exists.
         if (instance != null)
         {
@@ -53,20 +55,28 @@ public class OptionsAndSettings : MonoBehaviour
 
         // Gets a list of available resolution options.
         resolutions = Screen.resolutions;
-        if (PlayerPrefs.HasKey("ResolutionPref") == false)
+        
+        // Cycles through list to find current resolution.
+        for (int i = 0; i < resolutions.Length; i++)
         {
-            // Cycles through list to find current resolution.
-            for (int i = 0; i < resolutions.Length; i++)
+            string option = resolutions[i].width + " x " + resolutions[i].height;
+            resolutionOptions.Add(option);
+            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
             {
-                string option = resolutions[i].width + " x " + resolutions[i].height;
-                resolutionOptions.Add(option);
-                if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+                if (PlayerPrefs.HasKey("ResolutionPref") == false)
                 {
                     SetResolutionIndex(i);
                 }
+                else
+                {
+                    SetResolutionIndex(PlayerPrefs.GetInt("ResolutionPref"));
+                }
             }
         }
+    }
 
+    private void Start()
+    {
         LoadSettings();
     }
 
@@ -185,7 +195,7 @@ public class OptionsAndSettings : MonoBehaviour
     public void SetMainVolume(float _volume)
     {
         mainVolume = _volume;
-        audioMixer.SetFloat("MainVolume", mainVolume);
+        audioMixer.SetFloat("Master", mainVolume);
         mainVolumeChanged = true;
     }
     public float GetMainVolume()
@@ -196,7 +206,7 @@ public class OptionsAndSettings : MonoBehaviour
     public void SetMusicVolume(float _volume)
     {
         musicVolume = _volume;
-        audioMixer.SetFloat("MusicVolume", musicVolume);
+        audioMixer.SetFloat("Music", musicVolume);
         musicVolumeChanged = true;
     }
     public float GetMusicVolume()
@@ -207,7 +217,7 @@ public class OptionsAndSettings : MonoBehaviour
     public void SetSpeechVolume(float _volume)
     {
         speechVolume = _volume;
-        audioMixer.SetFloat("SpeechVolume", speechVolume);
+        audioMixer.SetFloat("Speech", speechVolume);
         speechVolumeChanged = true;
     }
     public float GetSpeechVolume()

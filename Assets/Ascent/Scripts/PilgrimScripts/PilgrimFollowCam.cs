@@ -31,7 +31,9 @@ public class PilgrimFollowCam : MonoBehaviour
     /// </summary>
     private Vector3 camOffset;
     private Vector3 baseCamOffset;
+    private Quaternion currentCamRotation;
     private Vector3 previousCamRotation;
+    private Vector3 camTwistWorld = Vector3.zero;
 
     private bool offsetIsBusy = false;
     private bool rotIsBusy = false;
@@ -54,6 +56,7 @@ public class PilgrimFollowCam : MonoBehaviour
         baseCamOffset = transform.position - Target.position;
         camOffset = baseCamOffset;
         previousCamRotation = transform.eulerAngles;
+        currentCamRotation = transform.rotation;
     }
 
     private void FixedUpdate()
@@ -61,11 +64,36 @@ public class PilgrimFollowCam : MonoBehaviour
         // Using FixedUpdate and no time.deltatime solved camera jitter issue.
         Vector3 camDesiredPos = Target.position + camOffset;
         transform.position = Vector3.Lerp(transform.position, camDesiredPos, FollowSpeed);
+
+
+        // Twist cam to face direction of travel.
+        
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(camTwistWorld) * currentCamRotation, 0.025f);
     }
+
+    public void CamTwistDirection(Vector3 _movedir, bool _stopped = false)
+    {
+        if (_stopped)
+        {
+            camTwistWorld.y = 0;
+            //camTwist.x = 0;
+        }
+
+        camTwistWorld = new Vector3(currentCamRotation.z, _movedir.x * 40f, currentCamRotation.x);
+
+        //Mathf.Clamp(_movedir.z * -30f, 0f, 50f)
+    }
+
+
 
     public Vector3 GetPrevCamRot()
     {
         return previousCamRotation;
+    }
+
+    public Quaternion GetCurrentCamRot()
+    {
+        return currentCamRotation;
     }
 
     /// <summary>
@@ -156,11 +184,12 @@ public class PilgrimFollowCam : MonoBehaviour
 
         while (elapsedTime <= _lerpDuration)
         {
-            transform.rotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / _lerpDuration);
+            currentCamRotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / _lerpDuration);
+            //transform.rotation = currentCamRotation;
             elapsedTime += Time.deltaTime;
             yield return null;
-            transform.rotation = endRotation;
         }
+        currentCamRotation = endRotation;
         rotIsBusy = false;
     }
 }

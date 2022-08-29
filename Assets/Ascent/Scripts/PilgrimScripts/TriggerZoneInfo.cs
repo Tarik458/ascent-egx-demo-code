@@ -12,6 +12,11 @@ public class TriggerZoneInfo : MonoBehaviour
     [HideInInspector]
     public GameObject fireZoneObj;
 
+
+    // Bee Stuff
+    [HideInInspector]
+    public bool canControlBees = false;
+
     [HideInInspector]
     public bool inBeeZone = false;
     [HideInInspector]
@@ -21,9 +26,19 @@ public class TriggerZoneInfo : MonoBehaviour
     private Beeeeez beeeeez;
 
     [HideInInspector]
+    public bool canPlaceRibbons = false;
+    [HideInInspector]
     public bool inHiveZone = false;
     [HideInInspector]
     public GameObject hiveZoneObj;
+
+    [HideInInspector]
+    public Tutorial tut;
+
+    private void Start()
+    {
+        tut = FindObjectOfType<Tutorial>();
+    }
 
     public void TestInterations(MixamoController _mixamo)
     {
@@ -32,23 +47,33 @@ public class TriggerZoneInfo : MonoBehaviour
             if (fireZoneObj.GetComponent<FireFlicker>().GetLitState() == false)
             {
                 fireZoneObj.GetComponent<FireFlicker>().LightFire();
-                _mixamo.LightFire();
+                if (fireZoneObj.GetComponent<FireFlicker>().IsWallFireQuery())
+                {
+                    _mixamo.LightWallFire();
+                }
+                else 
+                {
+                    _mixamo.LightFire(); 
+                }
             }
         }
 
-        if (inBeeZone && !beesFollowing)
+        if (canControlBees)
         {
-            beeeeez.SetTarget(this.gameObject.transform);
-            beesFollowing = true;
-        }
-        else if (beesFollowing)
-        {
-            beeeeez.StopFollowing();
-            beesFollowing = false;
-            Debug.Log("bees stop following");
+            if (inBeeZone && !beesFollowing)
+            {
+                beeeeez.SetTarget(this.gameObject.transform);
+                beesFollowing = true;
+            }
+            else if (beesFollowing)
+            {
+                beeeeez.StopFollowing();
+                beesFollowing = false;
+                Debug.Log("bees stop following");
+            }
         }
 
-        if (inHiveZone)
+        if (inHiveZone && canPlaceRibbons)
         {
             hiveZoneObj.GetComponent<HiveData>().ApplyRibbon();
         }
@@ -58,13 +83,39 @@ public class TriggerZoneInfo : MonoBehaviour
     {
         inFireZone = true;
         fireZoneObj = _objectRef;
+        if (!fireZoneObj.GetComponent<FireFlicker>().GetLitState() && tut != null)
+        {
+            tut.ShowInteractionTutorial();
+        }
     }
+    public void ExitFireZone()
+    {
+        inFireZone = false;
+        if (tut != null)
+        {
+            tut.ShowInteractionTutorial(false);
+        }
+    }
+
+
 
     public void EnterBeeZone(GameObject _objectRef)
     {
         inBeeZone = true;
         beeZoneObj = _objectRef;
         beeeeez = beeZoneObj.GetComponent<Beeeeez>();
+        if (tut != null)
+        {
+            tut.ShowInteractionTutorial();
+        }
+    }
+    public void ExitBeeZone()
+    {
+        inBeeZone = false;
+        if (tut != null)
+        {
+            tut.ShowInteractionTutorial(false);
+        }
     }
 
     public void ScareBees()
@@ -77,6 +128,10 @@ public class TriggerZoneInfo : MonoBehaviour
     {
         inHiveZone = true;
         hiveZoneObj = _objectRef;
+        if (!hiveZoneObj.GetComponent<HiveData>().GetRibbonState() && canPlaceRibbons && tut != null)
+        {
+            tut.ShowInteractionTutorial();
+        }
         if (beesFollowing)
         {
             if (_objectRef.GetComponent<HiveData>().BeesEnter(beeeeez))
@@ -87,7 +142,14 @@ public class TriggerZoneInfo : MonoBehaviour
 
         return _objectRef.GetComponent<HiveData>().GetRibbonState();
     }
-
+    public void ExitHiveZone()
+    {
+        inHiveZone = false;
+        if (tut != null)
+        {
+            tut.ShowInteractionTutorial(false);
+        }
+    }
 
     public void EndGame(GameObject _objectRef)
     {
