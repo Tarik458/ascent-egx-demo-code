@@ -284,6 +284,14 @@ public class PilgrimController : MonoBehaviour
             case "EndGameZone":
                 triggerZoneInfo.EndGame(_trigger.gameObject);
                 break;
+            case "SlipZone":
+                triggerZoneInfo.ThrowIntoWater();
+                mixamoController.FallToWater();
+                break;
+            case "WaterZone":
+                triggerZoneInfo.FallIntoWater();
+                mixamoController.FallToWater();
+                break;
             case "CamAdjustZone":
                 OnCamAdjust(_trigger.gameObject.GetComponentInParent<CamAdjustVals>());
                 break;

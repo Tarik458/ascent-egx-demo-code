@@ -151,6 +151,37 @@ public class TriggerZoneInfo : MonoBehaviour
         }
     }
 
+    public void ThrowIntoWater()
+    {
+        StartCoroutine(SlipSideways());
+    }
+
+    private IEnumerator SlipSideways()
+    {
+        float timePassed = 0f;
+        while (timePassed < 0.5f)
+        {
+            transform.Translate(new Vector3(-0.5f, 0f, 0.5f) * Time.deltaTime);
+            timePassed += Time.deltaTime;
+            yield return null;
+        }
+        StartCoroutine(SwimToShore());
+    }
+
+    public void FallIntoWater()
+    {
+        StartCoroutine(SwimToShore());
+    }
+
+    private IEnumerator SwimToShore()
+    {
+        GetComponent<Rigidbody>().useGravity = false;
+
+
+        yield return null;
+        GetComponent<Rigidbody>().useGravity = true;
+    }
+
     public void EndGame(GameObject _objectRef)
     {
         _objectRef.GetComponent<ShowEndscreen>().ShowCanvas();
