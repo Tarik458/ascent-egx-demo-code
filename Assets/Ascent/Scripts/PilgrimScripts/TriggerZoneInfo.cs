@@ -33,6 +33,9 @@ public class TriggerZoneInfo : MonoBehaviour
     public GameObject hiveZoneObj;
 
     [HideInInspector]
+    public bool InWater = false;
+
+    [HideInInspector]
     public Tutorial tut;
 
     private void Start()
@@ -165,7 +168,6 @@ public class TriggerZoneInfo : MonoBehaviour
             timePassed += Time.deltaTime;
             yield return null;
         }
-        StartCoroutine(SwimToShore());
     }
 
     public void FallIntoWater()
@@ -175,11 +177,21 @@ public class TriggerZoneInfo : MonoBehaviour
 
     private IEnumerator SwimToShore()
     {
+        InWater = true;
+        GetComponent<MixamoController>().EnterWater();
         GetComponent<Rigidbody>().useGravity = false;
-
-
-        yield return null;
+        Vector3 swimTarget = GameObject.Find("SwimTarget").transform.position;
+        while (InWater)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, swimTarget, Time.deltaTime);
+            if (transform.position == swimTarget)
+            {
+                InWater = false;
+            }
+            yield return null;
+        }
         GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<MixamoController>().ExitWater();
     }
 
     public void EndGame(GameObject _objectRef)
