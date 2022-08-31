@@ -164,7 +164,7 @@ public class TriggerZoneInfo : MonoBehaviour
         float timePassed = 0f;
         while (timePassed < 0.5f)
         {
-            transform.Translate(new Vector3(-0.5f, 0f, 0.5f) * Time.deltaTime);
+            transform.Translate(new Vector3(-1f, 0f, 1f) * 0.5f * Time.deltaTime);
             timePassed += Time.deltaTime;
             yield return null;
         }
@@ -180,10 +180,11 @@ public class TriggerZoneInfo : MonoBehaviour
         InWater = true;
         GetComponent<MixamoController>().EnterWater();
         GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
         Vector3 swimTarget = GameObject.Find("SwimTarget").transform.position;
         while (InWater)
         {
-            transform.position = Vector3.MoveTowards(transform.position, swimTarget, Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, swimTarget, 0.2f * Time.deltaTime);
             if (transform.position == swimTarget)
             {
                 InWater = false;
