@@ -1,0 +1,45 @@
+{
+    "name": "PauseControl",
+    "maps": [
+        {
+            "name": "PauseMenu",
+            "id": "6877e73f-aae9-480d-8531-33f611f2e73d",
+            "actions": [
+                {
+                    "name": "Pause_Unpause",
+                    "type": "Button",
+                    "id": "9bad634b-3744-4025-9f98-14123d40f882",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6ca473bc-d005-4219-ae3d-ff3a7db6237c",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause_Unpause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fdb1c912-d659-41ce-b2fb-80262250f787",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause_Unpause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
