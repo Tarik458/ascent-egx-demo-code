@@ -139,6 +139,7 @@ public class PilgrimController : MonoBehaviour
                 FollowCam.CamTwistDirection(moveDirection);
             }
 
+            // Footsteps audio.
             if(!isJumping && !GetComponent<AudioSource>().isPlaying)
             {
                 GetComponent<AudioSource>().PlayOneShot(Footsteps[Random.Range(0, Footsteps.Length - 1)]);
@@ -285,12 +286,18 @@ public class PilgrimController : MonoBehaviour
                 triggerZoneInfo.EndGame(_trigger.gameObject);
                 break;
             case "SlipZone":
-                triggerZoneInfo.ThrowIntoWater();
-                mixamoController.FallToWater();
+                if (!triggerZoneInfo.IsSlipping)
+                {
+                    triggerZoneInfo.ThrowIntoWater();
+                    mixamoController.FallToWater();
+                }
                 break;
             case "WaterZone":
-                triggerZoneInfo.FallIntoWater();
-                mixamoController.FallToWater();
+                if (!triggerZoneInfo.InWater)
+                {
+                    triggerZoneInfo.FallIntoWater(VisualComponentTransform);
+                    mixamoController.FallToWater();
+                }
                 break;
             case "CamAdjustZone":
                 OnCamAdjust(_trigger.gameObject.GetComponentInParent<CamAdjustVals>());
