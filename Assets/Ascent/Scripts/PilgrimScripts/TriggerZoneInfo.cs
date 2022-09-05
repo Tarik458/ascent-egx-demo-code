@@ -33,6 +33,12 @@ public class TriggerZoneInfo : MonoBehaviour
     public GameObject hiveZoneObj;
 
     [HideInInspector]
+    public bool InWater = false;
+    [HideInInspector]
+    public bool IsSlipping = false;
+
+
+    [HideInInspector]
     public Tutorial tut;
 
     private void Start()
@@ -149,6 +155,51 @@ public class TriggerZoneInfo : MonoBehaviour
         {
             tut.ShowInteractionTutorial(false);
         }
+    }
+
+    public void ThrowIntoWater()
+    {
+        StartCoroutine(SlipSideways());
+    }
+
+    private IEnumerator SlipSideways()
+    {
+        IsSlipping = true;
+        float timePassed = 0f;
+        yield return new WaitForSeconds(0.5f);
+        while (timePassed < 0.5f)
+        {
+            transform.Translate(new Vector3(-1f, 0f, 1f) * 5f * Time.deltaTime);
+            timePassed += Time.deltaTime;
+            yield return null;
+        }
+        IsSlipping = false;
+    }
+
+    public void FallIntoWater(Transform _visualComponent)
+    {
+            StartCoroutine(SwimToShore(_visualComponent));
+    }
+
+    private IEnumerator SwimToShore(Transform _visualComponent)
+    {
+        InWater = true;
+        GetComponent<MixamoController>().EnterWater();
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        Vector3 swimTarget = GameObject.Find("SwimTarget").transform.position;
+        while (InWater)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, swimTarget, 2f * Time.deltaTime);
+            _visualComponent.rotation = Quaternion.RotateTowards(_visualComponent.rotation, Quaternion.LookRotation(swimTarget - transform.position).normalized, 720f * Time.deltaTime);
+            if (transform.position == swimTarget)
+            {
+                InWater = false;
+            }
+            yield return null;
+        }
+        GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<MixamoController>().ExitWater();
     }
 
     public void EndGame(GameObject _objectRef)
