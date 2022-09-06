@@ -11,7 +11,7 @@ public class PilgrimController : MonoBehaviour
 
     [SerializeField]
     [Tooltip("The Main camera with the PilgrimFollowCam script attached.")]
-    private PilgrimFollowCam FollowCam;
+    private GameObject FollowCam;
 
     [SerializeField]
     [Tooltip("Modifier to change the walkspeed of the pilgrim, default 2.5")]
@@ -91,11 +91,6 @@ public class PilgrimController : MonoBehaviour
 
     private void Awake()
     {
-        if(FollowCam != null)
-        {
-            FollowCam.SetTarget(this.transform);
-        }
-
         // Set up input event triggers for movement.
         Controls.Pilgrim.Movement.performed += ctx => OnMovement(ctx.ReadValue<Vector2>());
         Controls.Pilgrim.Movement.canceled += ctx => OnMovement(ctx.ReadValue<Vector2>());
@@ -112,7 +107,7 @@ public class PilgrimController : MonoBehaviour
 
     private void Update()
     {
-        camFacingDirection = FollowCam.GetCurrentCamRot().eulerAngles.y;
+        camFacingDirection = FollowCam.transform.eulerAngles.y;
         Vector3 camRelativeMoveDir = Quaternion.Euler(0, camFacingDirection, 0) * moveDirection;
 
         // Used to stop character from sticking to walls.
@@ -123,20 +118,17 @@ public class PilgrimController : MonoBehaviour
         {
             MainRB.velocity = new Vector3(0f, MainRB.velocity.y, 0f);
             mixamoController.StopWalking();
-            FollowCam.CamTwistDirection(camRelativeMoveDir, true);
         }
         else
         {
             if (isCrouched)
             {
                 MainRB.position += CrouchSpeed * MoveSpeed * Time.deltaTime * camRelativeMoveDir;
-                FollowCam.CamTwistDirection(moveDirection);
             }
             else
             {
                 mixamoController.StartWalking();
                 MainRB.position += MoveSpeed * Time.deltaTime * camRelativeMoveDir;
-                FollowCam.CamTwistDirection(moveDirection);
             }
 
             // Footsteps audio.
@@ -241,13 +233,13 @@ public class PilgrimController : MonoBehaviour
         if (timeExclusionChecker != Vector3.zero)
         {
             // Apply offset.
-            FollowCam.AddOffset(offset);
+            //FollowCam.AddOffset(offset);
         }
 
-        Vector3 curCamRot = FollowCam.GetPrevCamRot();
-        _triggerZoneScript.SetPreviousRotation(curCamRot);
+       // Vector3 curCamRot = FollowCam.GetPrevCamRot();
+       // _triggerZoneScript.SetPreviousRotation(curCamRot);
         // Apply rotation.
-        FollowCam.SetAngleToFace(directionToFace);
+        //FollowCam.SetAngleToFace(directionToFace);
         // Set current cam rotation for backtracking.
 
         
