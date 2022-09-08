@@ -18,6 +18,7 @@ public class Beeeeez : MonoBehaviour
     private bool isFollowing = false;
     private bool isScared = false;
     private Vector3 scaredStartPos;
+    private float scaredSpeed;
     private float scaredStep;
 
     private Rigidbody rb;
@@ -45,7 +46,7 @@ public class Beeeeez : MonoBehaviour
         {
             // TODO:
             // needs some work, constant speed and when reach target set isScare = false
-            scaredStep += followSpeed * Time.deltaTime * 5f;
+            scaredStep += Time.deltaTime / scaredSpeed;
             rb.position= Vector3.Lerp(scaredStartPos, idleTargetPos, scaredStep);
         }
     }
@@ -107,6 +108,7 @@ public class Beeeeez : MonoBehaviour
         idleTargetPos = swarmLocationData.GetEmptyLocationAndSetOccupied();
         scaredStartPos = transform.position;
         scaredStep = 0f;
+        scaredSpeed = Vector3.Distance(scaredStartPos, idleTargetPos) / 2.5f;
         isScared = true;
     }
 
