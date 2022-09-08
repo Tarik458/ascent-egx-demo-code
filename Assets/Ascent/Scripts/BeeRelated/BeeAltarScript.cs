@@ -6,8 +6,12 @@ public class BeeAltarScript : FireFlicker
 {
     private bool pilgrimBeePowerEnabled = false;
 
-    [SerializeField]
     private MeadController meadController;
+
+    private void Start()
+    {
+        meadController = FindObjectOfType<MeadController>();
+    }
 
     private void Update()
     {

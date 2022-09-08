@@ -18,6 +18,7 @@ public class HiveData : MonoBehaviour
 
     private bool hasBees = false;
 
+    [SerializeField]
     private bool hasRibbon = false;
 
     private bool completed = false;
