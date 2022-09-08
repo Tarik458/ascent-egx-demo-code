@@ -22,7 +22,9 @@ public class DialogueIteration
 
 public class DialogueModule : MonoBehaviour
 {
-    [Header("Note: trigger must be Capseule collider")]
+    [Header("Note: trigger must be Capsule collider")]
+    [SerializeField]
+    private float TriggerRadiusMultipier = 5f;
     [Header("0th elements should be left empty")]
     [SerializeField]
     [Tooltip("0th item should be left blank because of broken inspector element.")]
@@ -107,7 +109,7 @@ public class DialogueModule : MonoBehaviour
         {
             if (!textWriter.InteractionStarted)
             {
-                dialogueTrigger.radius *= 10;
+                dialogueTrigger.radius *= TriggerRadiusMultipier;
             }
             textWriter.StartDisplayText(DialogueIterations[dialogueItrIndexToUse], this);
         }
@@ -125,7 +127,7 @@ public class DialogueModule : MonoBehaviour
 
     public void FinishInteraction()
     {
-        dialogueTrigger.radius /= 10;
+        dialogueTrigger.radius /= TriggerRadiusMultipier;
     }
 
     private void OnEnable()
