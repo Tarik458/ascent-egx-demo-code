@@ -10,11 +10,13 @@ public class SwarmLocationData : MonoBehaviour
     [System.Serializable]
     public class LocationAndActive
     {
-        public Vector3 Location;
+        public Transform Location;
         public bool isOccupied;
     }
 
     [SerializeField]
+    [Header("Use empty game objects to set transform positions.")]
+    [Header("0th element broken dont use.")]
     private List<LocationAndActive> Locations;
 
     /// <summary>
@@ -23,21 +25,22 @@ public class SwarmLocationData : MonoBehaviour
     /// <returns></returns>
     public Vector3 GetEmptyLocationAndSetOccupied()
     {
-        List<Vector3> availableLocations = new();
-        Vector3 returnLocation;
+        List<Transform> availableLocations = new();
+        Transform returnLocation;
 
-        for (int i = 0; i < Locations.Count; i++)
+        // i = 1 bc of broken 0th inspector element.
+        for (int i = 1; i < Locations.Count; i++)
         {
-            if (Locations[i].isOccupied == false)
+            if (Locations[i].isOccupied == false && Locations[i].Location != null)
             {
                 availableLocations.Add(Locations[i].Location);
             }
         }
 
         returnLocation = availableLocations[Random.Range(0, availableLocations.Count)];
-        SetLocationState(returnLocation, true);
+        SetLocationState(returnLocation.position, true);
 
-        return returnLocation;
+        return returnLocation.position;
     }
 
     /// <summary>
@@ -47,9 +50,10 @@ public class SwarmLocationData : MonoBehaviour
     /// <param name="_isOccupied"></param>
     public void SetLocationState(Vector3 _location, bool _isOccupied)
     {
-        for(int i = 0; i < Locations.Count; i++)
+        // i = 1 bc of broken 0th inspector element.
+        for (int i = 1; i < Locations.Count; i++)
         {
-            if (_location == Locations[i].Location)
+            if (_location == Locations[i].Location.position && Locations[i].Location != null)
             {
                 Locations[i].isOccupied = _isOccupied;
             }

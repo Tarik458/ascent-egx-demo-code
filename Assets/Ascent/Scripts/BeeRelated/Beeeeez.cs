@@ -17,6 +17,10 @@ public class Beeeeez : MonoBehaviour
 
     private bool isFollowing = false;
     private bool isScared = false;
+    private Vector3 scaredStartPos;
+    private float scaredStep;
+
+    private Rigidbody rb;
 
     private SwarmLocationData swarmLocationData;
 
@@ -24,22 +28,25 @@ public class Beeeeez : MonoBehaviour
     {
         idleTargetPos = transform.position;
         swarmLocationData = GetComponentInParent<SwarmLocationData>();
+        rb = GetComponent<Rigidbody>();
     }
 
 
     // Update is called once per frame
     private void FixedUpdate()
     {
+        rb.velocity = Vector3.zero;
         if (isFollowing)
         {
             Vector3 beeDesiredPos = Target.position + beeOffset;
-            transform.position = Vector3.Lerp(transform.position, beeDesiredPos, followSpeed);
+            rb.position = Vector3.Lerp(transform.position, beeDesiredPos, followSpeed);
         }
         else if(isScared)
-        { 
+        {
             // TODO:
             // needs some work, constant speed and when reach target set isScare = false
-            transform.position = Vector3.Lerp(transform.position, idleTargetPos, followSpeed * Time.deltaTime * 5);
+            scaredStep += followSpeed * Time.deltaTime * 5f;
+            rb.position= Vector3.Lerp(scaredStartPos, idleTargetPos, scaredStep);
         }
     }
 
@@ -74,7 +81,7 @@ public class Beeeeez : MonoBehaviour
 
         while (elapsedTime <= timeToLerp)
         {
-            transform.position = Vector3.Lerp(startPos, _desiredPos, elapsedTime/timeToLerp);
+            rb.position = Vector3.Lerp(startPos, _desiredPos, elapsedTime/timeToLerp);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -98,6 +105,8 @@ public class Beeeeez : MonoBehaviour
     {
         isFollowing = false;
         idleTargetPos = swarmLocationData.GetEmptyLocationAndSetOccupied();
+        scaredStartPos = transform.position;
+        scaredStep = 0f;
         isScared = true;
     }
 
