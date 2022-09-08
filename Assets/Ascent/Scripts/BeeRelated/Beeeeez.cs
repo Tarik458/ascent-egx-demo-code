@@ -77,12 +77,13 @@ public class Beeeeez : MonoBehaviour
     private IEnumerator TranslateToHive(Vector3 _desiredPos)
     {
         Vector3 startPos = transform.position;
+        Vector3 desiredPos = new(_desiredPos.x, _desiredPos.y + 1.5f, _desiredPos.z);
         float timeToLerp = 1.5f;
         float elapsedTime = 0f;
 
         while (elapsedTime <= timeToLerp)
         {
-            rb.position = Vector3.Lerp(startPos, _desiredPos, elapsedTime/timeToLerp);
+            rb.position = Vector3.Lerp(startPos, desiredPos, elapsedTime/timeToLerp);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
