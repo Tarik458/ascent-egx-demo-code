@@ -8,6 +8,7 @@ public class DialogueIteration
     [System.Serializable]
     public class Dialogue
     {
+        public string Name;
         public string Text;
         [Tooltip("Only fill if needed, will default to voice babble clips.")]
         public AudioClip SpecificClipToPlay = null;

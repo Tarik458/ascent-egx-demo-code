@@ -23,6 +23,11 @@ public class MeadController : MonoBehaviour
     private Material HealedBoiMat;
 
     [SerializeField]
+    private MeshRenderer Water;
+    [SerializeField]
+    private Material CleanWater;
+
+    [SerializeField]
     private TriggerZoneInfo triggerZoneInfo;
 
     private bool mead = false;
@@ -79,6 +84,7 @@ public class MeadController : MonoBehaviour
             step.material = HealthySteppyStoneMat;
         }
         SteppyStoneBlocker.SetActive(false);
+        Water.material = CleanWater;
         IllBoi.material = HealedBoiMat;
         IllBoi.gameObject.GetComponent<DialogueModule>().SetDialogueIterationToUse(3);
     }

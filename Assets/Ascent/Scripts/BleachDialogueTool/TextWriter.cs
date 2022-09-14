@@ -23,6 +23,9 @@ public class TextWriter : MonoBehaviour
     private float TextDisplaySpedUp = 0.005f;
 
     [SerializeField]
+    private TextMeshProUGUI NameTextBox;
+
+    [SerializeField]
     private TextMeshProUGUI TextBox;
 
     private int textIterator = 1;
@@ -64,6 +67,10 @@ public class TextWriter : MonoBehaviour
         AudioSource.Stop();
         if (textIterator < _dialogueItrToUse.DialogueText.Count)
         {
+            if (_dialogueItrToUse.DialogueText[_dialogueIndex].Name != "")
+            {
+                NameTextBox.text = _dialogueItrToUse.DialogueText[_dialogueIndex].Name;
+            }
             for (int i = 0; i <= _dialogueItrToUse.DialogueText[_dialogueIndex].Text.Length; i++)
             {
                 strToDisplay = _dialogueItrToUse.DialogueText[_dialogueIndex].Text.Substring(0, i);
