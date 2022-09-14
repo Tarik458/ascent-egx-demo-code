@@ -17,7 +17,7 @@ public class FarmersHearth : MonoBehaviour
 
     private IEnumerator CheckFireLit()
     {
-        while(FarmersFire.GetLitState() != false)
+        while(!FarmersFire.GetLitState())
         {
             yield return new WaitForSeconds(2f);
         }
@@ -26,7 +26,7 @@ public class FarmersHearth : MonoBehaviour
 
     private void ChangeFarmerDialogue()
     {
-        FarmersDialogue.SetDialogueIterationToUse(4);
+        FarmersDialogue.SetDialogueIterationToUse(3);
     }
 
 }
