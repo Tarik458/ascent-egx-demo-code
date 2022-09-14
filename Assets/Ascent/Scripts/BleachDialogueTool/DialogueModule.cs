@@ -58,7 +58,7 @@ public class DialogueModule : MonoBehaviour
         }
     }
 
-    void Start()
+   private void Start()
     {
         // Get the trigger collider on the object.
         foreach (CapsuleCollider sphCol in GetComponents<CapsuleCollider>())
@@ -74,6 +74,24 @@ public class DialogueModule : MonoBehaviour
         Controls.Pilgrim.Interact.performed += ctx => CallWriter();
     }
 
+    public int GetCurrentDialogueIteration()
+    {
+        return dialogueItrIndexToUse;
+    }
+    public void SetDialogueIterationToUse(int _dialogueIterationIndex)
+    {
+        dialogueItrIndexToUse = _dialogueIterationIndex;
+    }
+
+    public void IncrementDialogueIteration()
+    {
+        dialogueItrIndexToUse++;
+    }
+
+    public void FinishInteraction()
+    {
+        dialogueTrigger.radius /= TriggerRadiusMultipier;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -114,21 +132,6 @@ public class DialogueModule : MonoBehaviour
             }
             textWriter.StartDisplayText(DialogueIterations[dialogueItrIndexToUse], this);
         }
-    }
-
-    public void SetDialogueIterationToUse(int _dialogueIterationIndex)
-    {
-        dialogueItrIndexToUse = _dialogueIterationIndex;
-    }
-
-    public void IncrementDialogueIteration()
-    {
-        dialogueItrIndexToUse++;
-    }
-
-    public void FinishInteraction()
-    {
-        dialogueTrigger.radius /= TriggerRadiusMultipier;
     }
 
     private void OnEnable()
