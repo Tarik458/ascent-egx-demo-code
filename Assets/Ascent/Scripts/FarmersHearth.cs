@@ -10,6 +10,9 @@ public class FarmersHearth : MonoBehaviour
     [SerializeField]
     private DialogueModule FarmersDialogue;
 
+    [SerializeField]
+    private DialogueModule FarmersFamilyDialogue;
+
     private void Start()
     {
         StartCoroutine(CheckFireLit());
@@ -27,6 +30,7 @@ public class FarmersHearth : MonoBehaviour
     private void ChangeFarmerDialogue()
     {
         FarmersDialogue.SetDialogueIterationToUse(3);
+        FarmersFamilyDialogue.SetDialogueIterationToUse(2);
     }
 
 }
