@@ -84,30 +84,19 @@ public class MeadController : MonoBehaviour
 
 
             // Check for stages of completion
+
             if (completedCount == Hives.Count)
             {
                 meadCompleted = true;
                 Heal();
             }
-            else if (!beePowersEnabled && brothersDialogue.GetCurrentDialogueIteration() < 2 && brothersDialogue.GetCurrentDialogueIteration() > 1)
-            {
-                brothersDialogue.SetDialogueIterationToUse(2);
-            }
-            else if (beePowersEnabled && ribbonCount == 0 && completedCount == 0 && brothersDialogue.GetCurrentDialogueIteration() <3 && brothersDialogue.GetCurrentDialogueIteration() >= 2)
+            else if (beePowersEnabled && brothersDialogue.GetCurrentDialogueIteration() < 3)
             { 
                 brothersDialogue.SetDialogueIterationToUse(3);
             }
-            else if (ribbonCount < Hives.Count && brothersDialogue.GetCurrentDialogueIteration() < 4 && brothersDialogue.GetCurrentDialogueIteration() >= 3)
-            {
-                brothersDialogue.SetDialogueIterationToUse(4);
-            }
-            else if (ribbonCount == Hives.Count && brothersDialogue.GetCurrentDialogueIteration() < 5 && brothersDialogue.GetCurrentDialogueIteration() >= 4)
+            else if (ribbonCount == Hives.Count && beePowersEnabled && brothersDialogue.GetCurrentDialogueIteration() < 5)
             {
                 brothersDialogue.SetDialogueIterationToUse(5);
-            }
-            else if (completedCount < Hives.Count && brothersDialogue.GetCurrentDialogueIteration() < 6 && brothersDialogue.GetCurrentDialogueIteration() >= 5)
-            {
-                brothersDialogue.SetDialogueIterationToUse(6);
             }
         }
     }
