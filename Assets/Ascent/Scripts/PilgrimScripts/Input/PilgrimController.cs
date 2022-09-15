@@ -287,7 +287,7 @@ public class PilgrimController : MonoBehaviour
             case "WaterZone":
                 if (!triggerZoneInfo.InWater)
                 {
-                    triggerZoneInfo.FallIntoWater(VisualComponentTransform);
+                    triggerZoneInfo.FallIntoWater(VisualComponentTransform, this);
                     mixamoController.FallToWater();
                 }
                 break;
@@ -333,4 +333,12 @@ public class PilgrimController : MonoBehaviour
         Controls.Disable();
     }
 
+    public void EnableControls()
+    {
+        Controls.Enable();
+    }
+    public void DisableControls()
+    {
+        Controls.Disable();
+    }
 }

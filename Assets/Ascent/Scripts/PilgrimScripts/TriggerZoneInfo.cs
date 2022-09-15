@@ -176,14 +176,15 @@ public class TriggerZoneInfo : MonoBehaviour
         IsSlipping = false;
     }
 
-    public void FallIntoWater(Transform _visualComponent)
+    public void FallIntoWater(Transform _visualComponent, PilgrimController _controls)
     {
-            StartCoroutine(SwimToShore(_visualComponent));
+            StartCoroutine(SwimToShore(_visualComponent, _controls));
     }
 
-    private IEnumerator SwimToShore(Transform _visualComponent)
+    private IEnumerator SwimToShore(Transform _visualComponent, PilgrimController _controls)
     {
         InWater = true;
+        _controls.DisableControls();
         GetComponent<MixamoController>().EnterWater();
         GetComponent<Rigidbody>().useGravity = false;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -199,6 +200,7 @@ public class TriggerZoneInfo : MonoBehaviour
             yield return null;
         }
         GetComponent<Rigidbody>().useGravity = true;
+        _controls.EnableControls();
         GetComponent<MixamoController>().ExitWater();
     }
 
