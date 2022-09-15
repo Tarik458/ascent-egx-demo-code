@@ -14,7 +14,7 @@ public class MeadController : MonoBehaviour
     private GameObject IllBoi;
 
     [SerializeField]
-    private List<MeshRenderer> IllBoisMeshes;
+    private List<SkinnedMeshRenderer> IllBoisMeshes;
 
     [SerializeField]
     private Material HealthySteppyStoneMat;
@@ -110,9 +110,9 @@ public class MeadController : MonoBehaviour
         {
             step.material = HealthySteppyStoneMat;
         }
-        foreach (MeshRenderer boi in IllBoisMeshes)
+        foreach (SkinnedMeshRenderer boi in IllBoisMeshes)
         {
-            boi.material = HealedBoiMat;
+            boi.materials[2] = HealedBoiMat;
         }
 
         SteppyStoneBlocker.SetActive(false);
