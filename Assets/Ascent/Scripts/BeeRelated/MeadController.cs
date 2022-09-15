@@ -93,7 +93,7 @@ public class MeadController : MonoBehaviour
                 meadCompleted = true;
                 Heal();
             }
-            else if (beePowersEnabled && brothersDialogue.GetCurrentDialogueIteration() < 3)
+            else if (beePowersEnabled && brothersDialogue.GetCurrentDialogueIteration() < 3 && brothersDialogue.GetCurrentDialogueIteration() > 1)
             { 
                 brothersDialogue.SetDialogueIterationToUse(3);
             }
