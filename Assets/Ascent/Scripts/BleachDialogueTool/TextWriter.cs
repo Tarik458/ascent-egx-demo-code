@@ -23,6 +23,9 @@ public class TextWriter : MonoBehaviour
     private float TextDisplaySpedUp = 0.005f;
 
     [SerializeField]
+    private TextMeshProUGUI NameTextBox;
+
+    [SerializeField]
     private TextMeshProUGUI TextBox;
 
     private int textIterator = 1;
@@ -53,12 +56,21 @@ public class TextWriter : MonoBehaviour
         }
     }
 
+    public void ClearTextDisplay()
+    {
+        FinishDisplaying();
+    }
+
     private IEnumerator DisplayText(int _dialogueIndex, DialogueIteration _dialogueItrToUse, DialogueModule _caller)
     {
         string strToDisplay;
         AudioSource.Stop();
         if (textIterator < _dialogueItrToUse.DialogueText.Count)
         {
+            if (_dialogueItrToUse.DialogueText[_dialogueIndex].Name != "")
+            {
+                NameTextBox.text = _dialogueItrToUse.DialogueText[_dialogueIndex].Name;
+            }
             for (int i = 0; i <= _dialogueItrToUse.DialogueText[_dialogueIndex].Text.Length; i++)
             {
                 strToDisplay = _dialogueItrToUse.DialogueText[_dialogueIndex].Text.Substring(0, i);
@@ -89,20 +101,21 @@ public class TextWriter : MonoBehaviour
         else if (textIterator == _dialogueItrToUse.DialogueText.Count && _dialogueItrToUse.AutoIterateToNextDialogue)
         {
             _caller.IncrementDialogueIteration();
-            FinishDisplaying(_caller);
+            _caller.FinishInteraction();
+            FinishDisplaying();
         }
         else if (textIterator == _dialogueItrToUse.DialogueText.Count)
         {
-            FinishDisplaying(_caller);
+            _caller.FinishInteraction();
+            FinishDisplaying();
         }
         isRunning = false;
         isSpedUp = false;
     }
 
-    private void FinishDisplaying(DialogueModule _caller)
+    private void FinishDisplaying()
     {
         TextBox.text = string.Empty;
-        _caller.EndInteraction();
         InteractionStarted = false;
         textIterator = 1;
         UIObjToShow.SetActive(false);

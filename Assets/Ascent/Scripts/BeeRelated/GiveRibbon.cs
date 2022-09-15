@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GiveRibbon : MonoBehaviour
 {
-
+    // Mount on Ill NPC object.
     private bool canGiveRibbon = false;
 
     /// <summary>

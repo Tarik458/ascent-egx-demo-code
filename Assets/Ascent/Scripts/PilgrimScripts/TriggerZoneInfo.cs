@@ -169,7 +169,7 @@ public class TriggerZoneInfo : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         while (timePassed < 0.5f)
         {
-            transform.Translate(new Vector3(-1f, 0f, 1f) * 5f * Time.deltaTime);
+            transform.Translate(new Vector3(-1.5f, 0f, 0.5f) * 5f * Time.deltaTime);
             timePassed += Time.deltaTime;
             yield return null;
         }

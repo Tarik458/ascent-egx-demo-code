@@ -8,6 +8,7 @@ public class DialogueIteration
     [System.Serializable]
     public class Dialogue
     {
+        public string Name;
         public string Text;
         [Tooltip("Only fill if needed, will default to voice babble clips.")]
         public AudioClip SpecificClipToPlay = null;
@@ -22,7 +23,9 @@ public class DialogueIteration
 
 public class DialogueModule : MonoBehaviour
 {
-
+    [Header("Note: trigger must be Capsule collider")]
+    [SerializeField]
+    private float TriggerRadiusMultipier = 5f;
     [Header("0th elements should be left empty")]
     [SerializeField]
     [Tooltip("0th item should be left blank because of broken inspector element.")]
@@ -30,11 +33,11 @@ public class DialogueModule : MonoBehaviour
 
     private int dialogueItrIndexToUse = 1;
 
+    private CapsuleCollider dialogueTrigger;
     private TextWriter textWriter;
     private Tutorial tut;
 
     private bool isInZone = false;
-    private bool canInteract = false;
 
     /// <summary>
     /// Use Controls not _controls
@@ -55,19 +58,45 @@ public class DialogueModule : MonoBehaviour
         }
     }
 
-    void Start()
+   private void Start()
     {
+        // Get the trigger collider on the object.
+        foreach (CapsuleCollider sphCol in GetComponents<CapsuleCollider>())
+        {
+            if (sphCol.isTrigger)
+            {
+                dialogueTrigger = sphCol;
+            }
+        }
+
         textWriter = FindObjectOfType<TextWriter>();
         tut = FindObjectOfType<Tutorial>();
         Controls.Pilgrim.Interact.performed += ctx => CallWriter();
     }
 
+    public int GetCurrentDialogueIteration()
+    {
+        return dialogueItrIndexToUse;
+    }
+    public void SetDialogueIterationToUse(int _dialogueIterationIndex)
+    {
+        dialogueItrIndexToUse = _dialogueIterationIndex;
+    }
+
+    public void IncrementDialogueIteration()
+    {
+        dialogueItrIndexToUse++;
+    }
+
+    public void FinishInteraction()
+    {
+        dialogueTrigger.radius /= TriggerRadiusMultipier;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            canInteract = true;
             isInZone = true;
             if (tut != null)
             {
@@ -81,38 +110,28 @@ public class DialogueModule : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             isInZone = false;
-            if (textWriter.InteractionStarted == false)
+            if (textWriter.InteractionStarted)
             {
-                canInteract = false;
-                if (tut != null)
-                {
-                    tut.ShowInteractionTutorial(false);
-                }
+                FinishInteraction();
+                textWriter.ClearTextDisplay();
+            }
+            if (tut != null)
+            {
+                tut.ShowInteractionTutorial(false);
             }
         }
     }
 
     private void CallWriter()
     {
-        if (isInZone || canInteract)
+        if (isInZone)
         {
-                textWriter.StartDisplayText(DialogueIterations[dialogueItrIndexToUse], this);
+            if (!textWriter.InteractionStarted)
+            {
+                dialogueTrigger.radius *= TriggerRadiusMultipier;
+            }
+            textWriter.StartDisplayText(DialogueIterations[dialogueItrIndexToUse], this);
         }
-    }
-
-    public void SetDialogueIterationToUse(int _dialogueIterationIndex)
-    {
-        dialogueItrIndexToUse = _dialogueIterationIndex;
-    }
-
-    public void IncrementDialogueIteration()
-    {
-        dialogueItrIndexToUse++;
-    }
-
-    public void EndInteraction()
-    {
-        canInteract = false;
     }
 
     private void OnEnable()
