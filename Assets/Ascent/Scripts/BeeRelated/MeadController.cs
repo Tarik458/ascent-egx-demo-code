@@ -11,7 +11,10 @@ public class MeadController : MonoBehaviour
     private List<MeshRenderer> SteppyStones;
 
     [SerializeField]
-    private MeshRenderer IllBoi;
+    private GameObject IllBoi;
+
+    [SerializeField]
+    private List<MeshRenderer> IllBoisMeshes;
 
     [SerializeField]
     private Material HealthySteppyStoneMat;
@@ -60,7 +63,7 @@ public class MeadController : MonoBehaviour
 
     private void Start()
     {
-        brothersDialogue = IllBoi.gameObject.GetComponent<DialogueModule>();
+        brothersDialogue = IllBoi.GetComponent<DialogueModule>();
     }
 
 
@@ -107,9 +110,13 @@ public class MeadController : MonoBehaviour
         {
             step.material = HealthySteppyStoneMat;
         }
+        foreach (MeshRenderer boi in IllBoisMeshes)
+        {
+            boi.material = HealedBoiMat;
+        }
+
         SteppyStoneBlocker.SetActive(false);
         Water.material = CleanWater;
-        IllBoi.material = HealedBoiMat;
         brothersDialogue.SetDialogueIterationToUse(7);
     }
 
