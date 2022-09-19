@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using Cinemachine;
 public class PilgrimController : MonoBehaviour
 {
     [SerializeField]
@@ -12,6 +12,10 @@ public class PilgrimController : MonoBehaviour
     [SerializeField]
     [Tooltip("The Main camera with the PilgrimFollowCam script attached.")]
     private GameObject FollowCam;
+
+    [SerializeField]
+    [Tooltip("Cinemachine virtual camera")]
+    private CinemachineVirtualCameraBase CMVC;
 
     [SerializeField]
     [Tooltip("Modifier to change the walkspeed of the pilgrim, default 2.5")]
@@ -88,6 +92,7 @@ public class PilgrimController : MonoBehaviour
         }
     }
 
+    
 
     private void Awake()
     {
@@ -96,6 +101,7 @@ public class PilgrimController : MonoBehaviour
         Controls.Pilgrim.Movement.canceled += ctx => OnMovement(ctx.ReadValue<Vector2>());
         Controls.Pilgrim.Jump.performed += ctx => OnJump();
         Controls.Pilgrim.Interact.performed += ctx => OnInteractPressed();
+        Controls.Pilgrim.CamerFlip.performed += ctx => OnFlipCamera();
     }
 
     private void Start()
@@ -167,6 +173,14 @@ public class PilgrimController : MonoBehaviour
     {
         moveDirection = new Vector3(_direction.x, 0f, _direction.y);
     }
+
+    private void OnFlipCamera()
+    {
+        
+        CMVC.ForceCameraPosition(CMVC.transform.position + (new Vector3(this.gameObject.transform.position.x - CMVC.transform.position.x, 0f,
+            this.gameObject.transform.position.z - CMVC.transform.position.z) * 1.2f), Quaternion.identity);
+    }
+
 
     /// <summary>
     /// Call when jump button pressed to boost character upwards, only works if not crouched.
