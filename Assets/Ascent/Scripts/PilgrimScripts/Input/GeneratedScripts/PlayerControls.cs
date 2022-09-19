@@ -53,6 +53,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CamerFlip"",
+                    ""type"": ""Button"",
+                    ""id"": ""13272a28-e986-4f9e-a488-13ddffdcca1d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -264,6 +273,28 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ead922d0-efb0-460b-90cf-832c6d3d4571"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""CamerFlip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9e5e0d13-596a-43c0-852b-d38b52e3bb90"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""CamerFlip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -373,6 +404,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Pilgrim_Movement = m_Pilgrim.FindAction("Movement", throwIfNotFound: true);
         m_Pilgrim_Jump = m_Pilgrim.FindAction("Jump", throwIfNotFound: true);
         m_Pilgrim_Interact = m_Pilgrim.FindAction("Interact", throwIfNotFound: true);
+        m_Pilgrim_CamerFlip = m_Pilgrim.FindAction("CamerFlip", throwIfNotFound: true);
         // BookPages
         m_BookPages = asset.FindActionMap("BookPages", throwIfNotFound: true);
         m_BookPages_TurnForward = m_BookPages.FindAction("TurnForward", throwIfNotFound: true);
@@ -439,6 +471,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Pilgrim_Movement;
     private readonly InputAction m_Pilgrim_Jump;
     private readonly InputAction m_Pilgrim_Interact;
+    private readonly InputAction m_Pilgrim_CamerFlip;
     public struct PilgrimActions
     {
         private @PlayerControls m_Wrapper;
@@ -446,6 +479,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Pilgrim_Movement;
         public InputAction @Jump => m_Wrapper.m_Pilgrim_Jump;
         public InputAction @Interact => m_Wrapper.m_Pilgrim_Interact;
+        public InputAction @CamerFlip => m_Wrapper.m_Pilgrim_CamerFlip;
         public InputActionMap Get() { return m_Wrapper.m_Pilgrim; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -464,6 +498,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnInteract;
+                @CamerFlip.started -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnCamerFlip;
+                @CamerFlip.performed -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnCamerFlip;
+                @CamerFlip.canceled -= m_Wrapper.m_PilgrimActionsCallbackInterface.OnCamerFlip;
             }
             m_Wrapper.m_PilgrimActionsCallbackInterface = instance;
             if (instance != null)
@@ -477,6 +514,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @CamerFlip.started += instance.OnCamerFlip;
+                @CamerFlip.performed += instance.OnCamerFlip;
+                @CamerFlip.canceled += instance.OnCamerFlip;
             }
         }
     }
@@ -545,6 +585,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnCamerFlip(InputAction.CallbackContext context);
     }
     public interface IBookPagesActions
     {
