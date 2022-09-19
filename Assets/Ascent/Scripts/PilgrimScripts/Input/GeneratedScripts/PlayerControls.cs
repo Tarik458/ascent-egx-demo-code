@@ -319,6 +319,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skip"",
+                    ""type"": ""Button"",
+                    ""id"": ""0ffa9f4e-20a4-4b1c-a7ff-e439094fc202"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -365,6 +374,28 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""TurnBackward"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ae02c96f-9295-4b22-8296-50f3ebc3e41f"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""55b513ef-76f1-4cc9-805c-b738cef35b9f"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -409,6 +440,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_BookPages = asset.FindActionMap("BookPages", throwIfNotFound: true);
         m_BookPages_TurnForward = m_BookPages.FindAction("TurnForward", throwIfNotFound: true);
         m_BookPages_TurnBackward = m_BookPages.FindAction("TurnBackward", throwIfNotFound: true);
+        m_BookPages_Skip = m_BookPages.FindAction("Skip", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -527,12 +559,14 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private IBookPagesActions m_BookPagesActionsCallbackInterface;
     private readonly InputAction m_BookPages_TurnForward;
     private readonly InputAction m_BookPages_TurnBackward;
+    private readonly InputAction m_BookPages_Skip;
     public struct BookPagesActions
     {
         private @PlayerControls m_Wrapper;
         public BookPagesActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @TurnForward => m_Wrapper.m_BookPages_TurnForward;
         public InputAction @TurnBackward => m_Wrapper.m_BookPages_TurnBackward;
+        public InputAction @Skip => m_Wrapper.m_BookPages_Skip;
         public InputActionMap Get() { return m_Wrapper.m_BookPages; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -548,6 +582,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @TurnBackward.started -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnTurnBackward;
                 @TurnBackward.performed -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnTurnBackward;
                 @TurnBackward.canceled -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnTurnBackward;
+                @Skip.started -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnSkip;
+                @Skip.performed -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnSkip;
+                @Skip.canceled -= m_Wrapper.m_BookPagesActionsCallbackInterface.OnSkip;
             }
             m_Wrapper.m_BookPagesActionsCallbackInterface = instance;
             if (instance != null)
@@ -558,6 +595,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @TurnBackward.started += instance.OnTurnBackward;
                 @TurnBackward.performed += instance.OnTurnBackward;
                 @TurnBackward.canceled += instance.OnTurnBackward;
+                @Skip.started += instance.OnSkip;
+                @Skip.performed += instance.OnSkip;
+                @Skip.canceled += instance.OnSkip;
             }
         }
     }
@@ -591,5 +631,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     {
         void OnTurnForward(InputAction.CallbackContext context);
         void OnTurnBackward(InputAction.CallbackContext context);
+        void OnSkip(InputAction.CallbackContext context);
     }
 }
