@@ -43,7 +43,7 @@ public class Tutorial : MonoBehaviour
 
     public void ShowInteractionTutorial(bool _show = true)
     {
-        if (PlayTutorial)
+        if (PlayTutorial && tutorialIteration == 2)
         {
             InteractionVisual.SetActive(_show);
         }

@@ -112,7 +112,7 @@ public class MeadController : MonoBehaviour
         }
         foreach (SkinnedMeshRenderer boi in IllBoisMeshes)
         {
-            boi.materials[2] = HealedBoiMat;
+            boi.materials = new Material[] { boi.materials[0], boi.materials[1], HealedBoiMat, boi.materials[3], boi.materials[4], boi.materials[5]};
         }
 
         SteppyStoneBlocker.SetActive(false);
